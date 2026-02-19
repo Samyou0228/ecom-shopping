@@ -14,6 +14,8 @@ function ProductImageUpload({
   setImageLoadingState,
   isEditMode,
   isCustomStyling = false,
+  uploadUrl = "http://localhost:5000/api/admin/products/upload-image",
+  withCredentials = false,
 }) {
   const inputRef = useRef(null);
 
@@ -45,16 +47,15 @@ function ProductImageUpload({
     setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile);
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/products/upload-image",
-      data
-    );
+    const response = await axios.post(uploadUrl, data, {
+      withCredentials,
+    });
 
     if (response?.data?.success) {
       setUploadedImageUrl(response.data.result.url);
       setImageLoadingState(false);
     }
-  }, [imageFile, setImageLoadingState, setUploadedImageUrl]);
+  }, [imageFile, setImageLoadingState, setUploadedImageUrl, uploadUrl, withCredentials]);
 
   useEffect(() => {
     uploadImageToCloudinary();

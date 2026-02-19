@@ -15,7 +15,7 @@ import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 import { fetchCategoriesAndBrands } from "@/store/super-admin-slice";
 
-const defaultCategoryIcon = ShirtIcon;
+const DefaultCategoryIcon = ShirtIcon;
 const defaultBrandIcon = ShoppingBasket;
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -94,12 +94,12 @@ function ShoppingHome() {
     dispatch(fetchCategoriesAndBrands());
   }, [dispatch]);
 
-  const categoriesWithIcon = useMemo(
+  const categoriesWithImage = useMemo(
     () =>
       categories.map((category) => ({
         id: category.slug,
         label: category.name,
-        icon: defaultCategoryIcon,
+        image: category.image,
       })),
     [categories]
   );
@@ -167,7 +167,7 @@ function ShoppingHome() {
             Shop by category
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoriesWithIcon.map((categoryItem) => (
+            {categoriesWithImage.map((categoryItem) => (
               <Card
                 key={categoryItem.id}
                 onClick={() =>
@@ -176,7 +176,15 @@ function ShoppingHome() {
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <categoryItem.icon className="w-12 h-12 mb-4 text-primary" />
+                  {categoryItem.image ? (
+                    <img
+                      src={categoryItem.image}
+                      alt={categoryItem.label}
+                      className="w-16 h-16 mb-4 object-cover rounded-full"
+                    />
+                  ) : (
+                    <DefaultCategoryIcon className="w-12 h-12 mb-4 text-primary" />
+                  )}
                   <span className="font-bold">{categoryItem.label}</span>
                 </CardContent>
               </Card>

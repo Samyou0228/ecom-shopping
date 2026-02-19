@@ -1,5 +1,6 @@
 const Category = require("../../models/Category");
 const Brand = require("../../models/Brand");
+const { imageUploadUtil } = require("../../helpers/cloudinary");
 
 function slugify(text) {
   return text
@@ -11,7 +12,7 @@ function slugify(text) {
 
 const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, image } = req.body;
 
     if (!name) {
       return res.status(400).json({
@@ -30,7 +31,11 @@ const createCategory = async (req, res) => {
       });
     }
 
-    const category = await Category.create({ name, slug });
+    const category = await Category.create({
+      name,
+      slug,
+      image: image || "",
+    });
 
     res.status(201).json({
       success: true,
@@ -115,10 +120,30 @@ const getBrands = async (_req, res) => {
   }
 };
 
+const uploadCategoryImage = async (req, res) => {
+  try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const url = "data:" + req.file.mimetype + ";base64," + b64;
+    const result = await imageUploadUtil(url);
+
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
 module.exports = {
   createCategory,
   getCategories,
   createBrand,
   getBrands,
+  uploadCategoryImage,
 };
 

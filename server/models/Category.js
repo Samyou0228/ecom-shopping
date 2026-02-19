@@ -15,6 +15,11 @@ const CategorySchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    image: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -24,4 +29,3 @@ const CategorySchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Category", CategorySchema);
-

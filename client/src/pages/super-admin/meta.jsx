@@ -7,12 +7,16 @@ import {
 } from "@/store/super-admin-slice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ProductImageUpload from "@/components/admin-view/image-upload";
 
 function SuperAdminMeta() {
   const dispatch = useDispatch();
   const { categories, brands } = useSelector((state) => state.superAdmin);
   const [categoryName, setCategoryName] = useState("");
   const [brandName, setBrandName] = useState("");
+  const [categoryImageFile, setCategoryImageFile] = useState(null);
+  const [categoryImageUrl, setCategoryImageUrl] = useState("");
+  const [categoryImageLoading, setCategoryImageLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategoriesAndBrands());
@@ -21,8 +25,15 @@ function SuperAdminMeta() {
   function handleAddCategory(event) {
     event.preventDefault();
     if (!categoryName.trim()) return;
-    dispatch(createCategory({ name: categoryName.trim() }));
+    dispatch(
+      createCategory({
+        name: categoryName.trim(),
+        image: categoryImageUrl,
+      })
+    );
     setCategoryName("");
+    setCategoryImageFile(null);
+    setCategoryImageUrl("");
   }
 
   function handleAddBrand(event) {
@@ -36,6 +47,18 @@ function SuperAdminMeta() {
     <div className="grid gap-8 md:grid-cols-2">
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Categories</h2>
+        <ProductImageUpload
+          imageFile={categoryImageFile}
+          setImageFile={setCategoryImageFile}
+          uploadedImageUrl={categoryImageUrl}
+          setUploadedImageUrl={setCategoryImageUrl}
+          setImageLoadingState={setCategoryImageLoading}
+          imageLoadingState={categoryImageLoading}
+          isEditMode={false}
+          isCustomStyling={true}
+          uploadUrl="http://localhost:5000/api/super/category/categories/upload-image"
+          withCredentials={true}
+        />
         <form onSubmit={handleAddCategory} className="flex gap-2">
           <Input
             placeholder="New category name"
@@ -71,4 +94,3 @@ function SuperAdminMeta() {
 }
 
 export default SuperAdminMeta;
-
