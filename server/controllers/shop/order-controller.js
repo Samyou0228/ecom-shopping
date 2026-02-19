@@ -1,7 +1,13 @@
-const paypal = require("../../helpers/paypal");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 const createOrder = async (req, res) => {
   try {
@@ -9,83 +15,71 @@ const createOrder = async (req, res) => {
       userId,
       cartItems,
       addressInfo,
-      orderStatus,
-      paymentMethod,
-      paymentStatus,
       totalAmount,
-      orderDate,
-      orderUpdateDate,
-      paymentId,
-      payerId,
       cartId,
     } = req.body;
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:5173/shop/paypal-return",
-        cancel_url: "http://localhost:5173/shop/paypal-cancel",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: item.price.toFixed(2),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
-          },
-          amount: {
-            currency: "USD",
-            total: totalAmount.toFixed(2),
-          },
-          description: "description",
-        },
-      ],
-    };
+    if (!userId || !cartItems || !cartItems.length || !addressInfo || !cartId) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order data",
+      });
+    }
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.log(error);
+    const order = new Order({
+      userId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus: "pending",
+      paymentMethod: "razorpay",
+      paymentStatus: "created",
+      totalAmount,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
+      paymentId: "",
+      payerId: "",
+    });
 
-        return res.status(500).json({
+    try {
+      const razorpayOrder = await razorpayInstance.orders.create({
+        amount: Math.round(totalAmount * 100),
+        currency: "INR",
+        receipt: `order_rcptid_${Date.now()}`,
+      });
+
+      order.paymentId = razorpayOrder.id;
+
+      await order.save();
+
+      return res.status(201).json({
+        success: true,
+        orderId: order._id,
+        razorpayOrderId: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        key: process.env.RAZORPAY_KEY_ID,
+      });
+    } catch (error) {
+      const message =
+        error.error?.description ||
+        error.message ||
+        "Error while creating payment order";
+
+      console.log(message);
+
+      if (error.statusCode === 401) {
+        return res.status(200).json({
           success: false,
-          message: "Error while creating paypal payment",
-        });
-      } else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          paymentMethod,
-          paymentStatus,
-          totalAmount,
-          orderDate,
-          orderUpdateDate,
-          paymentId,
-          payerId,
-        });
-
-        await newlyCreatedOrder.save();
-
-        const approvalURL = paymentInfo.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-
-        res.status(201).json({
-          success: true,
-          approvalURL,
-          orderId: newlyCreatedOrder._id,
+          message: "Razorpay authentication failed. Please update API keys.",
         });
       }
-    });
+
+      return res.status(500).json({
+        success: false,
+        message,
+      });
+    }
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -97,7 +91,31 @@ const createOrder = async (req, res) => {
 
 const capturePayment = async (req, res) => {
   try {
-    const { paymentId, payerId, orderId } = req.body;
+    const {
+      orderId,
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
+    } = req.body;
+
+    if (!orderId || !razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment data",
+      });
+    }
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpayOrderId + "|" + razorpayPaymentId)
+      .digest("hex");
+
+    if (expectedSignature !== razorpaySignature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature",
+      });
+    }
 
     let order = await Order.findById(orderId);
 
@@ -110,8 +128,8 @@ const capturePayment = async (req, res) => {
 
     order.paymentStatus = "paid";
     order.orderStatus = "confirmed";
-    order.paymentId = paymentId;
-    order.payerId = payerId;
+    order.paymentId = razorpayPaymentId;
+    order.payerId = "";
 
     for (let item of order.cartItems) {
       let product = await Product.findById(item.productId);

@@ -106,10 +106,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   }
 
   useEffect(() => {
-    dispatch(fetchAllAddresses(user?.id));
-  }, [dispatch]);
-
-  console.log(addressList, "addressList");
+    if (user?.id) {
+      dispatch(fetchAllAddresses(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   return (
     <Card>
@@ -117,6 +117,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
               <AddressCard
+                key={singleAddressItem?._id}
                 selectedId={selectedId}
                 handleDeleteAddress={handleDeleteAddress}
                 addressInfo={singleAddressItem}

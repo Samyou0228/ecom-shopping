@@ -1,7 +1,7 @@
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
@@ -10,7 +10,6 @@ function ProductImageUpload({
   imageFile,
   setImageFile,
   imageLoadingState,
-  uploadedImageUrl,
   setUploadedImageUrl,
   setImageLoadingState,
   isEditMode,
@@ -40,7 +39,9 @@ function ProductImageUpload({
     }
   }
 
-  async function uploadImageToCloudinary() {
+  const uploadImageToCloudinary = useCallback(async () => {
+    if (!imageFile) return;
+
     setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile);
@@ -53,11 +54,11 @@ function ProductImageUpload({
       setUploadedImageUrl(response.data.result.url);
       setImageLoadingState(false);
     }
-  }
+  }, [imageFile, setImageLoadingState, setUploadedImageUrl]);
 
   useEffect(() => {
-    if (imageFile !== null) uploadImageToCloudinary();
-  }, [imageFile]);
+    uploadImageToCloudinary();
+  }, [uploadImageToCloudinary]);
 
   return (
     <div

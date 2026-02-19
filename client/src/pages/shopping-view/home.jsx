@@ -1,22 +1,5 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.webp";
-import bannerThree from "../../assets/banner-3.webp";
-import {
-  Airplay,
-  BabyIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CloudLightning,
-  Heater,
-  Images,
-  Shirt,
-  ShirtIcon,
-  ShoppingBasket,
-  UmbrellaIcon,
-  WashingMachine,
-  WatchIcon,
-} from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, ShirtIcon, ShoppingBasket } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -105,8 +88,6 @@ function ShoppingHome() {
       })
     );
   }, [dispatch]);
-
-  console.log(productList, "productList");
 
   useEffect(() => {
     dispatch(getFeatureImages());

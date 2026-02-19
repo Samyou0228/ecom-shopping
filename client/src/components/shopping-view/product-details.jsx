@@ -1,7 +1,11 @@
-import { StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,8 +28,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const { toast } = useToast();
 
   function handleRatingChange(getRating) {
-    console.log(getRating, "getRating");
-
     setRating(getRating);
   }
 
@@ -93,10 +95,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }
 
   useEffect(() => {
-    if (productDetails !== null) dispatch(getReviews(productDetails?._id));
-  }, [productDetails]);
-
-  console.log(reviews, "reviews");
+    if (productDetails !== null) {
+      dispatch(getReviews(productDetails?._id));
+    }
+  }, [productDetails, dispatch]);
 
   const averageReview =
     reviews && reviews.length > 0
@@ -117,12 +119,12 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
           />
         </div>
         <div className="">
-          <div>
-            <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
-              {productDetails?.description}
-            </p>
-          </div>
+          <DialogTitle className="text-3xl font-extrabold">
+            {productDetails?.title}
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground text-2xl mb-5 mt-4">
+            {productDetails?.description}
+          </DialogDescription>
           <div className="flex items-center justify-between">
             <p
               className={`text-3xl font-bold text-primary ${
@@ -170,7 +172,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             <div className="grid gap-6">
               {reviews && reviews.length > 0 ? (
                 reviews.map((reviewItem) => (
-                  <div className="flex gap-4">
+                  <div
+                    key={reviewItem?._id}
+                    className="flex gap-4"
+                  >
                     <Avatar className="w-10 h-10 border">
                       <AvatarFallback>
                         {reviewItem?.userName[0].toUpperCase()}

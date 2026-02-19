@@ -2,38 +2,32 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  approvalURL: null,
   isLoading: false,
   orderId: null,
+  razorpayOrder: null,
   orderList: [],
   orderDetails: null,
 };
 
 export const createNewOrder = createAsyncThunk(
   "/order/createNewOrder",
-  async (orderData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/shop/order/create",
-      orderData
-    );
+  async (orderData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/shop/order/create",
+        orderData
+      );
 
-    return response.data;
-  }
-);
+      return response.data;
+    } catch (error) {
+      const errorPayload =
+        error.response?.data || {
+          success: false,
+          message: "Order creation failed",
+        };
 
-export const capturePayment = createAsyncThunk(
-  "/order/capturePayment",
-  async ({ paymentId, payerId, orderId }) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/shop/order/capture",
-      {
-        paymentId,
-        payerId,
-        orderId,
-      }
-    );
-
-    return response.data;
+      return rejectWithValue(errorPayload);
+    }
   }
 );
 
@@ -74,17 +68,18 @@ const shoppingOrderSlice = createSlice({
       })
       .addCase(createNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.approvalURL = action.payload.approvalURL;
         state.orderId = action.payload.orderId;
-        sessionStorage.setItem(
-          "currentOrderId",
-          JSON.stringify(action.payload.orderId)
-        );
+        state.razorpayOrder = {
+          id: action.payload.razorpayOrderId,
+          amount: action.payload.amount,
+          currency: action.payload.currency,
+          key: action.payload.key,
+        };
       })
       .addCase(createNewOrder.rejected, (state) => {
         state.isLoading = false;
-        state.approvalURL = null;
         state.orderId = null;
+        state.razorpayOrder = null;
       })
       .addCase(getAllOrdersByUserId.pending, (state) => {
         state.isLoading = true;

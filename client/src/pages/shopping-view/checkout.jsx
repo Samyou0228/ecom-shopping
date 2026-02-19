@@ -4,20 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
 import { createNewOrder } from "@/store/shop/order-slice";
-import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
-  const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const [isPaymentStart, setIsPaymemntStart] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -37,7 +34,7 @@ function ShoppingCheckout() {
       ? cartItems.items.map((item) => item.image).filter(Boolean)
       : [];
 
-  function handleInitiatePaypalPayment() {
+  function handleInitiateRazorpayPayment() {
     if (!cartItems || !cartItems.items || cartItems.items.length === 0) {
       toast({
         title: "Your cart is empty. Please add items to proceed",
@@ -76,28 +73,90 @@ function ShoppingCheckout() {
         phone: currentSelectedAddress?.phone,
         notes: currentSelectedAddress?.notes,
       },
-      orderStatus: "pending",
-      paymentMethod: "paypal",
-      paymentStatus: "pending",
       totalAmount: totalCartAmount,
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
-      paymentId: "",
-      payerId: "",
     };
 
     dispatch(createNewOrder(orderData)).then((data) => {
-      console.log(data, "sangam");
-      if (data?.payload?.success) {
-        setIsPaymemntStart(true);
-      } else {
-        setIsPaymemntStart(false);
-      }
-    });
-  }
+      const payload = data?.payload;
 
-  if (approvalURL) {
-    window.location.href = approvalURL;
+      if (!payload?.success) {
+        setIsPaymemntStart(false);
+        toast({
+          title: payload?.message || "Unable to start payment. Please try again.",
+          variant: "destructive",
+        });
+
+        return;
+      }
+
+      if (!(window && window.Razorpay)) {
+        setIsPaymemntStart(false);
+        toast({
+          title: "Payment SDK not loaded. Please refresh the page.",
+          variant: "destructive",
+        });
+
+        return;
+      }
+
+      const options = {
+        key: payload.key,
+        amount: payload.amount,
+        currency: payload.currency,
+        name: "Ecommerce",
+        description: "Order Payment",
+        order_id: payload.razorpayOrderId,
+        prefill: {
+          name: user?.userName,
+          email: user?.email,
+        },
+        notes: {
+          address: `${currentSelectedAddress?.address}, ${currentSelectedAddress?.city}`,
+        },
+        theme: {
+          color: "#000000",
+        },
+        handler: function (response) {
+          axios
+            .post("http://localhost:5000/api/shop/order/capture", {
+              orderId: payload.orderId,
+              razorpayOrderId: payload.razorpayOrderId,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            })
+            .then((res) => {
+              if (res.data.success) {
+                toast({
+                  title: "Payment successful!",
+                });
+                window.location.href = "/shop/payment-success";
+              } else {
+                setIsPaymemntStart(false);
+                toast({
+                  title: "Payment verification failed.",
+                  variant: "destructive",
+                });
+              }
+            })
+            .catch(() => {
+              setIsPaymemntStart(false);
+              toast({
+                title: "Payment confirmation failed.",
+                variant: "destructive",
+              });
+            });
+        },
+        modal: {
+          ondismiss: function () {
+            setIsPaymemntStart(false);
+          },
+        },
+      };
+
+      const razorpayObject = new window.Razorpay(options);
+      razorpayObject.open();
+      setIsPaymemntStart(true);
+    });
   }
 
   return (
@@ -147,7 +206,10 @@ function ShoppingCheckout() {
         <div className="flex flex-col gap-4">
           {cartItems && cartItems.items && cartItems.items.length > 0
             ? cartItems.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
+                <UserCartItemsContent
+                  key={item?.productId || item?._id}
+                  cartItem={item}
+                />
               ))
             : null}
           <div className="mt-8 space-y-4">
@@ -157,10 +219,10 @@ function ShoppingCheckout() {
             </div>
           </div>
           <div className="mt-4 w-full">
-            <Button onClick={handleInitiatePaypalPayment} className="w-full">
+            <Button onClick={handleInitiateRazorpayPayment} className="w-full">
               {isPaymentStart
-                ? "Processing Paypal Payment..."
-                : "Checkout with Paypal"}
+                ? "Processing Payment..."
+                : "Pay with Razorpay (UPI / Cards)"}
             </Button>
           </div>
         </div>

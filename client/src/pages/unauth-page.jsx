@@ -79,7 +79,7 @@ function UnauthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <p>You don't have access to view this page</p>
+      <p>You do not have access to view this page</p>
     </div>
   );
 }
