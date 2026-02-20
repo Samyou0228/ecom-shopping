@@ -74,9 +74,9 @@ function SuperAdminDashboard() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-300 bg-gradient-to-r from-sky-100 via-pink-100 to-rose-100 p-4 md:p-6 shadow-md">
+      <div className="rounded-2xl border border-pink-200 bg-[#ffd6f0] p-4 md:p-6 shadow-md">
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="group border border-pink-200 rounded-xl p-4 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md hover:shadow-xl hover:border-pink-400 transform hover:-translate-y-1.5 hover:scale-[1.05] transition-all duration-300 ease-out animate-in fade-in-0 zoom-in-50">
+          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-pink-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50">
             <div className="flex items-center justify-between">
               <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 Total admins
@@ -93,7 +93,7 @@ function SuperAdminDashboard() {
               <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500" />
             </div>
           </div>
-          <div className="group border border-pink-200 rounded-xl p-4 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md hover:shadow-xl hover:border-emerald-500 transform hover:-translate-y-1.5 hover:scale-[1.05] transition-all duration-300 ease-out animate-in fade-in-0 zoom-in-50 delay-100">
+          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-emerald-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50 delay-100">
             <div className="flex items-center justify-between">
               <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 Approved admins
@@ -110,7 +110,7 @@ function SuperAdminDashboard() {
               <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-emerald-500 to-lime-500" />
             </div>
           </div>
-          <div className="group border border-pink-200 rounded-xl p-4 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md hover:shadow-xl hover:border-amber-500 transform hover:-translate-y-1.5 hover:scale-[1.05] transition-all duration-300 ease-out animate-in fade-in-0 zoom-in-50 delay-200">
+          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-amber-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50 delay-200">
             <div className="flex items-center justify-between">
               <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 Pending admins
@@ -131,7 +131,7 @@ function SuperAdminDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start animate-in fade-in-0 slide-in-from-left-4 delay-100">
-        <div className="border border-pink-200 rounded-2xl p-4 md:p-5 space-y-4 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md">
+        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 space-y-4 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <span className="h-6 w-1 rounded-full bg-gradient-to-b from-sky-400 to-indigo-500" />
             Homepage banner images
@@ -171,7 +171,7 @@ function SuperAdminDashboard() {
             ))}
           </div>
         </div>
-        <div className="border border-pink-200 rounded-2xl p-4 md:p-5 space-y-3 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md animate-in fade-in-0 slide-in-from-right-4 delay-150">
+        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 space-y-3 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out animate-in fade-in-0 slide-in-from-right-4 delay-150">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <span className="h-6 w-1 rounded-full bg-gradient-to-b from-pink-400 to-rose-500" />
             Preview
@@ -193,7 +193,7 @@ function SuperAdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 animate-in fade-in-0 slide-in-from-bottom-4 delay-200">
-        <div className="border border-pink-200 rounded-2xl p-4 md:p-5 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md">
+        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-lg font-semibold">Categories</h2>
             <span className="text-sm text-muted-foreground">
@@ -211,7 +211,7 @@ function SuperAdminDashboard() {
             ))}
           </ul>
         </div>
-        <div className="border border-pink-200 rounded-2xl p-4 md:p-5 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md">
+        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-lg font-semibold">Brands</h2>
             <span className="text-sm text-muted-foreground">
@@ -231,7 +231,7 @@ function SuperAdminDashboard() {
         </div>
       </div>
 
-      <div className="border border-pink-200 rounded-2xl p-4 md:p-5 bg-gradient-to-br from-white via-pink-100 to-rose-100 shadow-md animate-in fade-in-0 slide-in-from-bottom-4 delay-300">
+      <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out animate-in fade-in-0 slide-in-from-bottom-4 delay-300">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold">Latest pending admins</h2>
           <span className="text-sm text-muted-foreground">
