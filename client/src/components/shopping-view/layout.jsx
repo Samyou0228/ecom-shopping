@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/auth-slice";
 import { Button } from "../ui/button";
-import { ArrowLeft, LogOut, Menu, Home, ShoppingBag, ShoppingCart, User, X } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, Home, ShoppingBag, ShoppingCart, User, X, ShoppingBasket, Sparkles } from "lucide-react";
 
 function ShoppingLayout() {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ function ShoppingLayout() {
 
   function handleLogout() {
     dispatch(logoutUser());
+    navigate("/auth/login");
   }
 
   function handleBack() {
