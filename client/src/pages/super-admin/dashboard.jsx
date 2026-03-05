@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAdminSummary,
-  fetchCategoriesAndBrands,
   fetchPendingAdmins,
 } from "@/store/super-admin-slice";
 import ProductImageUpload from "@/components/admin-view/image-upload";
@@ -12,12 +11,11 @@ import {
   deleteFeatureImage,
   getFeatureImages,
 } from "@/store/common-slice";
-import { ShieldCheck, UserCheck, Users } from "lucide-react";
+import { ShieldCheck, UserCheck, Users, Image, Trash2 } from "lucide-react";
 
 function SuperAdminDashboard() {
   const dispatch = useDispatch();
-  const { adminSummary, categories, brands, pendingAdmins } =
-    useSelector((state) => state.superAdmin);
+  const { adminSummary, pendingAdmins } = useSelector((state) => state.superAdmin);
   const { featureImageList } = useSelector((state) => state.commonFeature);
 
   const [imageFile, setImageFile] = useState(null);
@@ -26,14 +24,12 @@ function SuperAdminDashboard() {
 
   useEffect(() => {
     dispatch(fetchAdminSummary());
-    dispatch(fetchCategoriesAndBrands());
     dispatch(fetchPendingAdmins());
     dispatch(getFeatureImages());
   }, [dispatch]);
 
   function handleUploadFeatureImage() {
     if (!uploadedImageUrl) return;
-
     dispatch(addFeatureImage(uploadedImageUrl)).then((data) => {
       if (data?.payload?.success) {
         setImageFile(null);
@@ -51,207 +47,153 @@ function SuperAdminDashboard() {
   const pendingAdminsCount = adminSummary?.pendingAdmins ?? 0;
 
   return (
-    <div className="relative space-y-10 max-w-6xl mx-auto px-4 py-10 lg:py-12 animate-in fade-in-10 slide-in-from-bottom-4">
-      <div className="pointer-events-none absolute inset-x-0 -top-10 -z-10 flex justify-center">
-        <div className="h-40 w-40 md:h-64 md:w-64 rounded-full bg-gradient-to-r from-sky-500/60 via-sky-400/60 to-indigo-500/60 blur-3xl opacity-90 animate-ken-burns-slow" />
-      </div>
-      <div className="pointer-events-none absolute -right-10 bottom-10 -z-10">
-        <div className="h-40 w-40 md:h-56 md:w-56 rounded-full bg-gradient-to-br from-sky-400/55 to-cyan-400/55 blur-3xl opacity-90 animate-pulse" />
-      </div>
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 border border-emerald-200">
-          <ShieldCheck className="w-4 h-4" />
-          <span>Secure multi-admin control</span>
-        </div>
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600 bg-clip-text text-transparent">
-            Superadmin Dashboard
-          </h1>
-          <p className="text-sm md:text-base text-slate-600 mt-2 max-w-2xl">
-            Monitor admin approvals, organize your catalog, and curate homepage banners
-            in one colorful, centralized view.
-          </p>
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800">Welcome back!</h1>
+        <p className="text-sm text-slate-500">Here's your platform overview</p>
       </div>
 
-      <div className="rounded-2xl border border-pink-200 bg-[#ffd6f0] p-4 md:p-6 shadow-md">
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-pink-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                Total admins
-              </div>
-              <div className="p-2 rounded-full bg-sky-100 text-sky-600">
-                <Users className="w-4 h-4" />
-              </div>
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <Users className="w-6 h-6" />
+              <span className="text-3xl font-bold">{totalAdmins}</span>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <div className="text-3xl font-bold">{totalAdmins}</div>
-              <span className="text-xs text-slate-500">registered</span>
-            </div>
-            <div className="mt-3 h-2 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500" />
-            </div>
+            <div className="text-sm text-blue-100 font-medium">Total Admins</div>
           </div>
-          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-emerald-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50 delay-100">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                Approved admins
-              </div>
-              <div className="p-2 rounded-full bg-emerald-50 text-emerald-600">
-                <UserCheck className="w-4 h-4" />
-              </div>
+        </div>
+        
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <UserCheck className="w-6 h-6" />
+              <span className="text-3xl font-bold">{approvedAdmins}</span>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <div className="text-3xl font-bold">{approvedAdmins}</div>
-              <span className="text-xs text-slate-500">active</span>
-            </div>
-            <div className="mt-3 h-2 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-emerald-500 to-lime-500" />
-            </div>
+            <div className="text-sm text-emerald-100 font-medium">Approved Admins</div>
           </div>
-          <div className="group border-2 border-pink-300 rounded-xl p-4 bg-[#ffd6f0] shadow-md hover:shadow-xl hover:border-amber-500 transform hover:-translate-y-2 hover:scale-[1.06] transition-all duration-500 ease-out animate-in fade-in-0 zoom-in-50 delay-200">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                Pending admins
-              </div>
-              <div className="p-2 rounded-full bg-amber-50 text-amber-600">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
+        </div>
+        
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <ShieldCheck className="w-6 h-6" />
+              <span className="text-3xl font-bold">{pendingAdminsCount}</span>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <div className="text-3xl font-bold">{pendingAdminsCount}</div>
-              <span className="text-xs text-slate-500">awaiting approval</span>
-            </div>
-            <div className="mt-3 h-2 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full w-1/2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500" />
-            </div>
+            <div className="text-sm text-amber-100 font-medium">Pending Requests</div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start animate-in fade-in-0 slide-in-from-left-4 delay-100">
-        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 space-y-4 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <span className="h-6 w-1 rounded-full bg-gradient-to-b from-sky-400 to-indigo-500" />
-            Homepage banner images
-          </h2>
-          <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isCustomStyling={true}
-          />
-          <Button onClick={handleUploadFeatureImage} className="w-full mt-2">
-            Upload banner
-          </Button>
-          <div className="mt-4 space-y-3">
-            {featureImageList.map((item) => (
-              <div
-                key={item._id}
-                className="group flex items-center justify-between gap-3 border border-slate-200 rounded-xl p-2 bg-slate-50 hover:bg-slate-100 transition-colors duration-300"
+      {/* Banner Management */}
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+        <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-blue-500">
+              <Image className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">Homepage Banners</h2>
+              <p className="text-sm text-slate-500">Manage your featured images</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-5">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Upload Section */}
+            <div className="space-y-4">
+              <ProductImageUpload
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                uploadedImageUrl={uploadedImageUrl}
+                setUploadedImageUrl={setUploadedImageUrl}
+                setImageLoadingState={setImageLoadingState}
+                imageLoadingState={imageLoadingState}
+                isCustomStyling={true}
+              />
+              <Button 
+                onClick={handleUploadFeatureImage} 
+                disabled={!uploadedImageUrl}
+                className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-sm h-10"
               >
-                <div className="flex-1 h-16 overflow-hidden rounded-lg">
-                  <img
-                    src={item.image}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                Upload Banner
+              </Button>
+            </div>
+            
+            {/* Preview Section */}
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 mb-3">Preview ({featureImageList.length} banners)</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {featureImageList.slice(0, 4).map((item) => (
+                  <div key={item._id} className="relative aspect-video rounded-xl overflow-hidden bg-slate-100 shadow-md group">
+                    <img src={item.image} className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => handleDeleteFeatureImage(item._id)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-red-600"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                {featureImageList.length === 0 && (
+                  <div className="col-span-2 aspect-video rounded-xl bg-slate-100 flex flex-col items-center justify-center">
+                    <Image className="w-12 h-12 text-slate-300 mb-2" />
+                    <p className="text-sm text-slate-400">No banners uploaded</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pending Admins */}
+      {pendingAdmins.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+          <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-amber-50 to-orange-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-amber-500">
+                  <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDeleteFeatureImage(item._id)}
-                >
-                  Delete
-                </Button>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-800">Pending Admin Requests</h2>
+                  <p className="text-sm text-slate-500">{pendingAdmins.length} awaiting approval</p>
+                </div>
               </div>
-            ))}
+              <span className="px-3 py-1 bg-amber-100 text-amber-600 rounded-full text-sm font-medium">
+                {pendingAdmins.length} Pending
+              </span>
+            </div>
+          </div>
+          <div className="p-5">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {pendingAdmins.slice(0, 6).map((admin) => (
+                <div key={admin._id} className="p-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold">
+                      {admin.userName?.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-800">{admin.userName}</div>
+                      <div className="text-xs text-slate-500">{admin.email}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 space-y-3 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out animate-in fade-in-0 slide-in-from-right-4 delay-150">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <span className="h-6 w-1 rounded-full bg-gradient-to-b from-pink-400 to-rose-500" />
-            Preview
-          </h2>
-          <div className="group w-full h-48 md:h-64 lg:h-72 overflow-hidden rounded-xl bg-slate-100">
-            {featureImageList && featureImageList.length > 0 ? (
-              <img
-                src={featureImageList[0].image}
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 animate-ken-burns-slow"
-              />
-            ) : uploadedImageUrl ? (
-              <img
-                src={uploadedImageUrl}
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 animate-ken-burns-slow"
-              />
-            ) : null}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 animate-in fade-in-0 slide-in-from-bottom-4 delay-200">
-        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold">Categories</h2>
-            <span className="text-sm text-muted-foreground">
-              {categories.length} total
-            </span>
-          </div>
-          <ul className="space-y-1 max-h-52 overflow-auto">
-            {categories.map((category) => (
-              <li
-                key={category._id}
-                className="flex items-center justify-between px-2 py-1 rounded-lg hover:bg-pink-100 transition-colors duration-200"
-              >
-                <span className="text-sm text-slate-800">{category.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold">Brands</h2>
-            <span className="text-sm text-muted-foreground">
-              {brands.length} total
-            </span>
-          </div>
-          <ul className="space-y-1 max-h-52 overflow-auto">
-            {brands.map((brand) => (
-              <li
-                key={brand._id}
-                className="flex items-center justify-between px-2 py-1 rounded-lg hover:bg-pink-100 transition-colors duration-200"
-              >
-                <span className="text-sm text-slate-800">{brand.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-2 border-pink-300 rounded-2xl p-4 md:p-5 bg-[#ffd6f0] shadow-md transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out animate-in fade-in-0 slide-in-from-bottom-4 delay-300">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">Latest pending admins</h2>
-          <span className="text-sm text-muted-foreground">
-            {pendingAdmins.length} pending
-          </span>
-        </div>
-        {pendingAdmins.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No admin registrations waiting for approval.
-          </p>
-        ) : (
-          <ul className="space-y-1">
-            {pendingAdmins.slice(0, 5).map((admin) => (
-              <li key={admin._id} className="text-sm">
-                {admin.userName} – {admin.email}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      )}
     </div>
   );
 }

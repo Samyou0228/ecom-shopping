@@ -3,13 +3,13 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/auth-slice";
 import { Button } from "../ui/button";
-import { ArrowLeft, LogOut, Menu } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, Users, Tags, Building2, Shield, X } from "lucide-react";
 
 function SuperAdminLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function handleLogout() {
     dispatch(logoutUser());
@@ -20,125 +20,153 @@ function SuperAdminLayout() {
     navigate("/auth/login");
   }
 
+  const navItems = [
+    { path: "/super/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/super/categories", label: "Categories", icon: Tags },
+    { path: "/super/meta", label: "Brands", icon: Building2 },
+    { path: "/super/admin-approval", label: "Admin Approval", icon: Shield },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-100 via-sky-200 to-indigo-200 text-slate-900">
-      <header className="flex items-center justify-between px-6 py-4 border-b border-pink-300 bg-gradient-to-r from-pink-100 via-pink-200 to-rose-200/90 backdrop-blur-md shadow-sm animate-in fade-in-0 slide-in-from-top-4">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleBack}
-            className="hidden sm:inline-flex border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <div className="flex flex-col">
-            <div className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-medium text-emerald-600">
-                Superadmin
-              </span>
-            </div>
-            <div className="font-bold text-xl tracking-tight bg-gradient-to-r from-sky-500 via-violet-500 to-pink-500 bg-clip-text text-transparent">
-              Superadmin Dashboard
+    <div className="min-h-screen flex bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Sidebar - Desktop */}
+      <aside className="hidden md:flex flex-col w-64 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl">
+        <div className="p-6 border-b border-slate-700">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo (2).png" 
+              alt="Logo" 
+              className="h-10 w-auto object-contain"
+            />
+            <div>
+              <div className="font-bold text-lg">Superadmin</div>
+              <div className="text-xs text-slate-400">Dashboard</div>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center rounded-full border border-pink-200 bg-white/80 text-pink-600 hover:bg-pink-50 shadow-sm p-2 transition-colors"
-            onClick={() => setMobileOpen((prev) => !prev)}
-          >
-            <Menu className="w-4 h-4" />
-          </button>
-          <nav className="hidden md:flex gap-4 text-sm bg-gradient-to-br from-white via-pink-100 to-rose-100 px-2 py-1 rounded-full border border-pink-200 shadow-sm">
-            <Link
-              to="/super/dashboard"
-              className={`px-3 py-1 rounded-full transition-all duration-200 hover:scale-105 ${
-                location.pathname.includes("/super/dashboard")
-                  ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                  : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-              }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/super/admins"
-              className={`px-3 py-1 rounded-full transition-all duration-200 hover:scale-105 ${
-                location.pathname.includes("/super/admins")
-                  ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                  : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-              }`}
-            >
-              Admins
-            </Link>
-            <Link
-              to="/super/meta"
-              className={`px-3 py-1 rounded-full transition-all duration-200 hover:scale-105 ${
-                location.pathname.includes("/super/meta")
-                  ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                  : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-              }`}
-            >
-              Categories & Brands
-            </Link>
-          </nav>
-          <Button
+        
+        <nav className="flex-1 p-4 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname.includes(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30"
+                    : "text-slate-300 hover:bg-slate-700/50 hover:text-white"
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+          
+          {/* Logout in nav bar */}
+          <Link
+            to="/auth/login"
             onClick={handleLogout}
-            className="inline-flex gap-2 items-center rounded-full px-4 py-2 text-sm font-medium shadow-md bg-gradient-to-r from-rose-500 via-fuchsia-500 to-indigo-500 hover:from-rose-400 hover:via-fuchsia-400 hover:to-indigo-400 text-white"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-red-400 hover:bg-red-500/10 hover:text-red-300 mt-4 border-t border-slate-700 pt-6"
           >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Mobile */}
+      <div className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white z-50 transform transition-transform duration-300 md:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-slate-700 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo (2).png" 
+              alt="Logo" 
+              className="h-10 w-auto object-contain"
+            />
+            <div>
+              <div className="font-bold text-lg">Superadmin</div>
+              <div className="text-xs text-slate-400">Dashboard</div>
+            </div>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="p-2 hover:bg-slate-700 rounded-lg">
+            <X className="w-5 h-5" />
+          </button>
         </div>
-      </header>
-      <div
-        className={`md:hidden fixed inset-x-4 top-20 z-40 rounded-2xl border border-pink-200 bg-gradient-to-br from-white via-pink-100 to-rose-100 backdrop-blur-lg shadow-xl transition-all duration-300 ${
-          mobileOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        }`}
-      >
-        <nav className="flex flex-col gap-2 p-4 text-sm">
+        
+        <nav className="flex-1 p-4 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname.includes(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30"
+                    : "text-slate-300 hover:bg-slate-700/50 hover:text-white"
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+          
+          {/* Logout in nav bar - mobile */}
           <Link
-            to="/super/dashboard"
-            className={`px-3 py-2 rounded-xl transition-all duration-200 ${
-              location.pathname.includes("/super/dashboard")
-                ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-            }`}
-            onClick={() => setMobileOpen(false)}
+            to="/auth/login"
+            onClick={() => {
+              handleLogout();
+              setSidebarOpen(false);
+            }}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-red-400 hover:bg-red-500/10 hover:text-red-300 mt-4 border-t border-slate-700 pt-6"
           >
-            Dashboard
-          </Link>
-          <Link
-            to="/super/admins"
-            className={`px-3 py-2 rounded-xl transition-all duration-200 ${
-              location.pathname.includes("/super/admins")
-                ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-            }`}
-            onClick={() => setMobileOpen(false)}
-          >
-            Admins
-          </Link>
-          <Link
-            to="/super/meta"
-            className={`px-3 py-2 rounded-xl transition-all duration-200 ${
-              location.pathname.includes("/super/meta")
-                ? "bg-pink-200 text-pink-900 border border-pink-300 shadow-md"
-                : "text-slate-700 hover:text-pink-800 hover:bg-pink-100"
-            }`}
-            onClick={() => setMobileOpen(false)}
-          >
-            Categories &amp; Brands
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
           </Link>
         </nav>
       </div>
-      <main className="flex-1 p-6">
-        <Outlet />
-      </main>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Mobile Header */}
+        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white shadow-md">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
+          >
+            <Menu className="w-6 h-6 text-slate-700" />
+          </button>
+          <img 
+            src="/logo (2).png" 
+            alt="Logo" 
+            className="h-8 w-auto object-contain"
+          />
+          <button
+            onClick={handleBack}
+            className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
+          >
+            <ArrowLeft className="w-5 h-5 text-slate-700" />
+          </button>
+        </header>
+
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

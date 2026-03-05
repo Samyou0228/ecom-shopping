@@ -1,4 +1,4 @@
-import { Input } from "../ui/input";
+ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -37,6 +37,7 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
+            className="border-black/20 text-black placeholder:text-black/40"
           />
         );
 
@@ -52,7 +53,7 @@ function CommonForm({
             }
             value={value}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full border-black/20">
               <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
@@ -81,6 +82,7 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
+            className="border-black/20 text-black placeholder:text-black/40"
           />
         );
 
@@ -100,6 +102,7 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
+            className="border-black/20 text-black placeholder:text-black/40"
           />
         );
         break;
@@ -113,12 +116,12 @@ function CommonForm({
       <div className="flex flex-col gap-3">
         {formControls.map((controlItem) => (
           <div className="grid w-full gap-1.5" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
+            <Label className="mb-1 text-black">{controlItem.label}</Label>
             {renderInputsByComponentType(controlItem)}
           </div>
         ))}
       </div>
-      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
+      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full bg-black hover:bg-black/80">
         {buttonText || "Submit"}
       </Button>
     </form>

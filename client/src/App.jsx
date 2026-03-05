@@ -25,6 +25,7 @@ import SuperAdminLayout from "./components/super-admin/layout";
 import SuperAdminDashboard from "./pages/super-admin/dashboard";
 import SuperAdminAdmins from "./pages/super-admin/admins";
 import SuperAdminMeta from "./pages/super-admin/meta";
+import SuperAdminCategories from "./pages/super-admin/categories";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -83,8 +84,19 @@ function App() {
           }
         >
           <Route path="dashboard" element={<SuperAdminDashboard />} />
-          <Route path="admins" element={<SuperAdminAdmins />} />
+          <Route path="categories" element={<SuperAdminCategories />} />
           <Route path="meta" element={<SuperAdminMeta />} />
+          <Route path="admin-approval" element={<UnauthPage />} />
+        </Route>
+        <Route
+          path="/unauth-page"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <SuperAdminLayout />
+            </CheckAuth>
+          }
+        >
+          <Route index element={<UnauthPage />} />
         </Route>
         <Route
           path="/shop"
@@ -101,7 +113,6 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
         </Route>
-        <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
