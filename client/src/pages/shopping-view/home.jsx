@@ -108,55 +108,55 @@ function ShoppingHome() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="group bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <ShoppingBag className="w-8 h-8" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2 rounded-xl bg-white/20">
+                <ShoppingBag className="w-6 h-6" />
               </div>
-              <div>
-                <div className="text-3xl font-bold">{shoppingStats.totalProducts}</div>
-                <div className="text-blue-100">Total Products</div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{shoppingStats.totalProducts}</div>
+                <div className="text-blue-100 text-sm">Total Products</div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            </div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
         
-        <div className="group bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Star className="w-8 h-8" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2 rounded-xl bg-white/20">
+                <Star className="w-6 h-6" />
               </div>
-              <div>
-                <div className="text-3xl font-bold">{shoppingStats.featuredProducts}</div>
-                <div className="text-emerald-100">Featured Products</div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{shoppingStats.featuredProducts}</div>
+                <div className="text-emerald-100 text-sm">Featured Products</div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            </div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
         
-        <div className="group bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <TrendingUp className="w-8 h-8" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-lg">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
+          <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2 rounded-xl bg-white/20">
+                <TrendingUp className="w-6 h-6" />
               </div>
-              <div>
-                <div className="text-3xl font-bold">{shoppingStats.totalCategories}</div>
-                <div className="text-amber-100">Product Categories</div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{shoppingStats.totalCategories}</div>
+                <div className="text-amber-100 text-sm">Product Categories</div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            </div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -237,27 +237,33 @@ function ShoppingHome() {
       </div>
 
       {/* Categories & Brands Section */}
-      <section className="py-12 bg-white rounded-3xl shadow-2xl border border-slate-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-800 mb-2">Shop by Category & Brand</h2>
-            <p className="text-slate-600 text-lg">Browse our carefully curated products</p>
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+        <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-blue-500">
+              <ShirtIcon className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">Shop by Category & Brand</h2>
+              <p className="text-sm text-slate-500">Browse our carefully curated products</p>
+            </div>
           </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {/* Categories Dropdown */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-slate-200">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
-                  <ShirtIcon className="w-6 h-6 text-white" />
+        </div>
+        
+        <div className="p-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Categories */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-xl bg-blue-500">
+                  <ShirtIcon className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Shop by Category</h3>
-                  <p className="text-slate-600">Browse our product categories</p>
+                  <h3 className="text-lg font-bold text-slate-800">Shop by Category</h3>
+                  <p className="text-sm text-slate-500">Browse our product categories</p>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {categoriesWithImage.map((categoryItem) => (
                   <div
                     key={categoryItem.id}
@@ -266,7 +272,7 @@ function ShoppingHome() {
                     }
                     className="group cursor-pointer"
                   >
-                    <div className="relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 border border-slate-200">
+                    <div className="relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 border border-slate-200">
                       <div className="p-3 text-center">
                         {categoryItem.image ? (
                           <img
@@ -288,27 +294,26 @@ function ShoppingHome() {
                 ))}
               </div>
             </div>
-
-            {/* Brands Dropdown */}
-            <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-8 border border-slate-200">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl">
-                  <ShoppingBasket className="w-6 h-6 text-white" />
+            
+            {/* Brands */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-xl bg-emerald-500">
+                  <ShoppingBasket className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Shop by Brand</h3>
-                  <p className="text-slate-600">Discover your favorite brands</p>
+                  <h3 className="text-lg font-bold text-slate-800">Shop by Brand</h3>
+                  <p className="text-sm text-slate-500">Discover your favorite brands</p>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {brandsWithIcon.map((brandItem) => (
                   <div
                     key={brandItem.id}
                     onClick={() => handleNavigateToListingPage(brandItem, "brand")}
                     className="group cursor-pointer"
                   >
-                    <div className="relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 border border-slate-200">
+                    <div className="relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 border border-slate-200">
                       <div className="p-3 text-center">
                         <div className="w-12 h-12 mx-auto bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300">
                           <brandItem.icon className="w-6 h-6 text-white" />
@@ -324,16 +329,24 @@ function ShoppingHome() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Featured Products */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-800 mb-2">Featured Products</h2>
-            <p className="text-slate-600 text-lg">Our most popular and highly rated items</p>
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+        <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-blue-500">
+              <Star className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">Featured Products</h2>
+              <p className="text-sm text-slate-500">Our most popular and highly rated items</p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        </div>
+        
+        <div className="p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
                   <div key={productItem._id} className="transform hover:scale-105 transition-transform duration-300">
@@ -345,17 +358,17 @@ function ShoppingHome() {
                   </div>
                 ))
               : (
-                <div className="col-span-full text-center py-12">
-                  <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-8 rounded-2xl inline-block shadow-2xl">
-                    <Star className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-slate-600 mb-2">No products yet</h3>
-                    <p className="text-slate-500">Products will be available soon</p>
+                <div className="col-span-full text-center py-8">
+                  <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-6 rounded-xl inline-block shadow-lg">
+                    <Star className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                    <h3 className="text-lg font-semibold text-slate-600 mb-2">No products yet</h3>
+                    <p className="text-sm text-slate-500">Products will be available soon</p>
                   </div>
                 </div>
               )}
           </div>
         </div>
-      </section>
+      </div>
 
       <ProductDetailsDialog
         open={openDetailsDialog}

@@ -67,3 +67,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Scale down dashboard content to 80% */
+.dashboard-content {
+  transform: scale(0.8);
+  transform-origin: top center;
+  margin-bottom: -80px;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-content {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    transform: scale(0.75);
+    margin-bottom: -100px;
+  }
+}

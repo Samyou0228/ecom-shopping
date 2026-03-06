@@ -76,54 +76,50 @@ function UserCartItemsContent({ cartItem }) {
   const savings = isOnSale ? (originalPrice - salePrice) * cartItem?.quantity : 0;
 
   return (
-    <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 border border-slate-100 overflow-hidden">
-      {/* Product Content */}
-      <div className="p-6">
-        {/* Product Image Section */}
-        <div className="flex items-start gap-6 mb-4">
+    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+      <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-blue-500">
+            <ShoppingCart className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-800">{cartItem?.title}</h2>
+            <p className="text-sm text-slate-500">{cartItem?.category} • {cartItem?.brand}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="p-5">
+        <div className="flex items-start gap-6">
           <img
             src={cartItem?.image}
             alt={cartItem?.title}
             className="w-20 h-20 object-contain bg-white rounded-lg shadow-md flex-shrink-0 border border-slate-200"
           />
           
-          <div className="flex-1">
+          <div className="flex-1 space-y-4">
             {/* Badges */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2">
               {isOnSale && (
-                <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
-                  <Tag className="w-3 h-3 inline mr-1" />
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
+                  <Tag className="w-4 h-4 inline mr-1" />
                   On Sale
                 </span>
               )}
               {cartItem?.featured && (
-                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
-                  <Star className="w-3 h-3 inline mr-1" />
+                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
+                  <Star className="w-4 h-4 inline mr-1" />
                   Featured
                 </span>
               )}
             </div>
 
-            {/* Product Details */}
-            <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
-              {cartItem?.title}
-            </h3>
-            
-            <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
-              <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                {cartItem?.category}
-              </span>
-              <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
-                {cartItem?.brand}
-              </span>
-            </div>
-
             {/* Price Section */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {isOnSale ? (
                   <>
-                    <span className="text-lg text-red-600 font-bold">
+                    <span className="text-xl text-red-600 font-bold">
                       ${salePrice.toFixed(2)}
                     </span>
                     <span className="text-sm text-slate-500 line-through">
@@ -134,14 +130,14 @@ function UserCartItemsContent({ cartItem }) {
                     </span>
                   </>
                 ) : (
-                  <span className="text-lg text-slate-800 font-bold">
+                  <span className="text-xl text-slate-800 font-bold">
                     ${originalPrice.toFixed(2)}
                   </span>
                 )}
               </div>
               
               <div className="text-right">
-                <div className="text-xl font-bold text-slate-800">
+                <div className="text-2xl font-bold text-slate-800">
                   ${totalPrice.toFixed(2)}
                 </div>
                 {savings > 0 && (

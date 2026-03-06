@@ -11,7 +11,7 @@ import {
   deleteFeatureImage,
   getFeatureImages,
 } from "@/store/common-slice";
-import { ShieldCheck, UserCheck, Users, Image, Trash2 } from "lucide-react";
+import { ShieldCheck, UserCheck, Users, Image, Trash2, Sparkles, TrendingUp } from "lucide-react";
 
 function SuperAdminDashboard() {
   const dispatch = useDispatch();
@@ -47,24 +47,33 @@ function SuperAdminDashboard() {
   const pendingAdminsCount = adminSummary?.pendingAdmins ?? 0;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">Welcome back!</h1>
-        <p className="text-sm text-slate-500">Here's your platform overview</p>
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <Sparkles className="w-6 h-6 text-blue-500" />
+          <h1 className="text-3xl font-bold text-slate-800">Welcome to Super Admin Dashboard!</h1>
+          <Sparkles className="w-6 h-6 text-blue-500" />
+        </div>
+        <p className="text-lg text-slate-600">Manage your platform and admin users efficiently</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-5 text-white shadow-lg">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
           <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
-              <Users className="w-6 h-6" />
-              <span className="text-3xl font-bold">{totalAdmins}</span>
+              <div className="p-2 rounded-xl bg-white/20">
+                <Users className="w-6 h-6" />
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{totalAdmins}</div>
+                <div className="text-blue-100 text-sm">Total Admins</div>
+              </div>
             </div>
-            <div className="text-sm text-blue-100 font-medium">Total Admins</div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
         
@@ -73,10 +82,15 @@ function SuperAdminDashboard() {
           <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
-              <UserCheck className="w-6 h-6" />
-              <span className="text-3xl font-bold">{approvedAdmins}</span>
+              <div className="p-2 rounded-xl bg-white/20">
+                <UserCheck className="w-6 h-6" />
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{approvedAdmins}</div>
+                <div className="text-emerald-100 text-sm">Approved Admins</div>
+              </div>
             </div>
-            <div className="text-sm text-emerald-100 font-medium">Approved Admins</div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
         
@@ -85,10 +99,15 @@ function SuperAdminDashboard() {
           <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
-              <ShieldCheck className="w-6 h-6" />
-              <span className="text-3xl font-bold">{pendingAdminsCount}</span>
+              <div className="p-2 rounded-xl bg-white/20">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold">{pendingAdminsCount}</div>
+                <div className="text-amber-100 text-sm">Pending Requests</div>
+              </div>
             </div>
-            <div className="text-sm text-amber-100 font-medium">Pending Requests</div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>

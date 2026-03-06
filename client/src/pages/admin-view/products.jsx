@@ -40,11 +40,24 @@ function AdminProducts() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [filters, setFilters] = useState({
+    category: "",
+    brand: "",
+    featured: false
+  });
 
   const { productList } = useSelector((state) => state.adminProducts);
   const { categories, brands } = useSelector((state) => state.superAdmin);
   const dispatch = useDispatch();
   const { toast } = useToast();
+
+  // Filter products based on admin filters
+  const filteredProducts = productList?.filter(product => {
+    const categoryMatch = !filters.category || product.category === filters.category;
+    const brandMatch = !filters.brand || product.brand === filters.brand;
+    const featuredMatch = !filters.featured || product.featured;
+    return categoryMatch && brandMatch && featuredMatch;
+  }) || [];
 
   function onSubmit(event) {
     event.preventDefault();
@@ -91,6 +104,21 @@ function AdminProducts() {
     });
   }
 
+  function handleFilterChange(filterType, value) {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  }
+
+  function handleClearFilters() {
+    setFilters({
+      category: "",
+      brand: "",
+      featured: false
+    });
+  }
+
   function isFormValid() {
     return Object.keys(formData)
       .filter((currentKey) => currentKey !== "averageReview")
@@ -134,14 +162,77 @@ function AdminProducts() {
 
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
-        <Button onClick={() => setOpenCreateProductsDialog(true)}>
-          Add New Product
-        </Button>
+      {/* Filter Controls */}
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden mb-6">
+        <div className="p-4 bg-slate-50 border-b border-slate-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
+              <select
+                value={filters.category}
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category.slug} value={category.slug}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Brand</label>
+              <select
+                value={filters.brand}
+                onChange={(e) => handleFilterChange('brand', e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">All Brands</option>
+                {brands.map((brand) => (
+                  <option key={brand.slug} value={brand.slug}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-end">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.featured}
+                  onChange={(e) => handleFilterChange('featured', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-slate-700">Featured Only</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className="p-4 bg-white">
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-slate-600">
+              Showing {filteredProducts.length} of {productList?.length || 0} products
+            </p>
+            <div className="flex gap-2">
+              <Button onClick={() => setOpenCreateProductsDialog(true)}>
+                Add New Product
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleClearFilters}
+                className="border-slate-300 hover:bg-slate-50"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList && productList.length > 0
-          ? productList.map((productItem) => (
+        {filteredProducts && filteredProducts.length > 0
+          ? filteredProducts.map((productItem) => (
               <AdminProductTile
                 key={productItem?._id}
                 setFormData={setFormData}
@@ -151,7 +242,15 @@ function AdminProducts() {
                 handleDelete={handleDelete}
               />
             ))
-          : null}
+          : (
+            <div className="col-span-full text-center py-8">
+              <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-6 rounded-xl inline-block shadow-lg">
+                <ShoppingBag className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-slate-600 mb-2">No products found</h3>
+                <p className="text-sm text-slate-500">Try adjusting your filters or add new products</p>
+              </div>
+            </div>
+          )}
       </div>
       <Sheet
         open={openCreateProductsDialog}
