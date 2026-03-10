@@ -37,6 +37,9 @@ const addProduct = async (req, res) => {
 
     console.log(averageReview, "averageReview");
 
+    // Get seller ID from authenticated user
+    const sellerId = req.user.id;
+
     const newlyCreatedProduct = new Product({
       image,
       title,
@@ -47,6 +50,7 @@ const addProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      seller: sellerId,
     });
 
     await newlyCreatedProduct.save();
@@ -63,11 +67,14 @@ const addProduct = async (req, res) => {
   }
 };
 
-//fetch all products
-
+//fetch all products (filtered by seller)
 const fetchAllProducts = async (req, res) => {
   try {
-    const listOfProducts = await Product.find({});
+    // Get seller ID from authenticated user
+    const sellerId = req.user.id;
+    
+    // Only fetch products belonging to this seller
+    const listOfProducts = await Product.find({ seller: sellerId });
     res.status(200).json({
       success: true,
       data: listOfProducts,
@@ -97,12 +104,23 @@ const editProduct = async (req, res) => {
       averageReview,
     } = req.body;
 
+    // Get seller ID from authenticated user
+    const sellerId = req.user.id;
+
     let findProduct = await Product.findById(id);
     if (!findProduct)
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
+
+    // Check if the product belongs to this seller
+    if (findProduct.seller.toString() !== sellerId) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to edit this product",
+      });
+    }
 
     findProduct.title = title || findProduct.title;
     findProduct.description = description || findProduct.description;
@@ -133,13 +151,27 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findByIdAndDelete(id);
+    
+    // Get seller ID from authenticated user
+    const sellerId = req.user.id;
+
+    const product = await Product.findById(id);
 
     if (!product)
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
+
+    // Check if the product belongs to this seller
+    if (product.seller.toString() !== sellerId) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this product",
+      });
+    }
+
+    await Product.findByIdAndDelete(id);
 
     res.status(200).json({
       success: true,

@@ -19,6 +19,7 @@ import {
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAndBrands } from "@/store/super-admin-slice";
+import { ShoppingBag } from "lucide-react";
 
 const initialFormData = {
   image: null,
