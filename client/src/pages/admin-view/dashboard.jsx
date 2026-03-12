@@ -26,8 +26,10 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     category: "",
     brand: "",
-    featured: false
+    featured: false,
+    searchTerm: ""
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Stats for admin dashboard
   const adminStats = {
@@ -41,7 +43,10 @@ function AdminDashboard() {
     const categoryMatch = !filters.category || product.category === filters.category;
     const brandMatch = !filters.brand || product.brand === filters.brand;
     const featuredMatch = !filters.featured || product.featured;
-    return categoryMatch && brandMatch && featuredMatch;
+    const searchMatch = !searchTerm || 
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product._id.includes(searchTerm);
+    return categoryMatch && brandMatch && featuredMatch && searchMatch;
   }) || [];
 
   function handleNavigateToListingPage(getCurrentItem, section) {
@@ -374,7 +379,17 @@ function AdminDashboard() {
         
         {/* Filter Controls */}
         <div className="p-4 bg-slate-50 border-b border-slate-100">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Search Products</label>
+              <input
+                type="text"
+                placeholder="Search by name or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
               <select
@@ -430,8 +445,17 @@ function AdminDashboard() {
               ? filteredProducts.map((productItem) => (
                   <div key={productItem._id} className="transform hover:scale-105 transition-transform duration-300">
                     <AdminProductTile
+                      key={productItem._id}
                       product={productItem}
-                      handleGetProductDetails={handleGetProductDetails}
+                      openDetailsModal={async (product) => {
+                        dispatch(getReviews(product._id));
+                        const mockProductDetails = {
+                          ...product,
+                          reviews: [] // Will be populated by reducer
+                        };
+                        setProductDetails(mockProductDetails);
+                        setOpenDetailsDialog(true);
+                      }}
                     />
                   </div>
                 ))

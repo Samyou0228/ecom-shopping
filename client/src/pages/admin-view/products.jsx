@@ -44,10 +44,12 @@ function AdminProducts() {
   const [filters, setFilters] = useState({
     category: "",
     brand: "",
-    featured: false
+    featured: false,
+    searchTerm: ""
   });
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { productList } = useSelector((state) => state.adminProducts);
   const { categories, brands } = useSelector((state) => state.superAdmin);
@@ -59,7 +61,10 @@ function AdminProducts() {
     const categoryMatch = !filters.category || product.category === filters.category;
     const brandMatch = !filters.brand || product.brand === filters.brand;
     const featuredMatch = !filters.featured || product.featured;
-    return categoryMatch && brandMatch && featuredMatch;
+    const searchMatch = !searchTerm || 
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product._id.includes(searchTerm);
+    return categoryMatch && brandMatch && featuredMatch && searchMatch;
   }) || [];
 
   function onSubmit(event) {
@@ -170,7 +175,17 @@ function isFormValid() {
       {/* Filter Controls */}
       <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden mb-6">
         <div className="p-4 bg-slate-50 border-b border-slate-100">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Search Products</label>
+              <input
+                type="text"
+                placeholder="Search by name or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
               <select
@@ -318,11 +333,9 @@ function isFormValid() {
                   </div>
                 </div>
               </div>
-              <div className="pt-6 border-t border-slate-200 space-y-1 text-xs text-slate-500">
-                <div>ID: {selectedProduct._id}</div>
-                <div>Created: {new Date(selectedProduct.createdAt).toLocaleDateString()}</div>
-                <div>Updated: {new Date(selectedProduct.updatedAt).toLocaleDateString()}</div>
-              </div>
+                <div className="pt-6 border-t border-slate-200 space-y-1 text-xs text-slate-500">
+                  <div>ID: {selectedProduct._id}</div>
+                </div>
             </div>
           )}
         </SheetContent>

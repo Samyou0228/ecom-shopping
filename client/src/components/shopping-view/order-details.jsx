@@ -1,6 +1,11 @@
+import OrderRatingForm from "./order-rating-form";
+import {
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "../ui/dialog";
 import { useSelector } from "react-redux";
 import { Badge } from "../ui/badge";
-import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 
@@ -9,7 +14,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent className="sm:max-w-[600px]">
-      <div className="grid gap-6">
+      <DialogTitle className="mb-4">Order Details</DialogTitle>
+      <DialogDescription className="mb-6 text-slate-600">Order information and rating</DialogDescription>
+      <div className="grid gap-6 max-h-[80vh] overflow-y-auto">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
@@ -68,7 +75,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             </ul>
           </div>
         </div>
-        <div className="grid gap-4">
+      <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
@@ -81,6 +88,11 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             </div>
           </div>
         </div>
+        {orderDetails?.orderStatus === "delivered" && orderDetails?.cartItems?.[0] && (
+          <div>
+            <OrderRatingForm productId={orderDetails.cartItems[0].productId} orderId={orderDetails._id} />
+          </div>
+        )}
       </div>
     </DialogContent>
   );

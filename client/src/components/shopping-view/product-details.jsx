@@ -74,6 +74,13 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }
 
   function handleAddReview() {
+    if (!user?.id) {
+      toast({
+        title: "Please login to add review",
+        variant: "destructive"
+      });
+      return;
+    }
     dispatch(
       addReview({
         productId: productDetails?._id,
@@ -83,14 +90,25 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         reviewValue: rating,
       })
     ).then((data) => {
-      if (data.payload.success) {
+      if (data?.payload?.success) {
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
         toast({
           title: "Review added successfully!",
         });
+      } else {
+        toast({
+          title: data?.payload?.message || "Failed to add review",
+          variant: "destructive"
+        });
       }
+    }).catch((error) => {
+      console.error("Review error:", error);
+      toast({
+        title: "Network error - please try again",
+        variant: "destructive"
+      });
     });
   }
 

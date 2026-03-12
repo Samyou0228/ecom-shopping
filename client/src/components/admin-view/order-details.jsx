@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommonForm from "../common/form";
-import { DialogContent } from "../ui/dialog";
+import {
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
@@ -17,12 +21,20 @@ const initialFormData = {
 };
 
 function AdminOrderDetailsView({ orderDetails }) {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState({
+    status: orderDetails?.orderStatus || "",
+  });
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  console.log(orderDetails, "orderDetailsorderDetails");
+  // console.log(orderDetails, "orderDetailsorderDetails");
+
+  useEffect(() => {
+    setFormData({
+      status: orderDetails?.orderStatus || "",
+    });
+  }, [orderDetails?.orderStatus]);
 
   function handleUpdateStatus(event) {
     event.preventDefault();
@@ -34,7 +46,6 @@ function AdminOrderDetailsView({ orderDetails }) {
       if (data?.payload?.success) {
         dispatch(getOrderDetailsForAdmin(orderDetails?._id));
         dispatch(getAllOrdersForAdmin());
-        setFormData(initialFormData);
         toast({
           title: data?.payload?.message,
         });
@@ -43,7 +54,9 @@ function AdminOrderDetailsView({ orderDetails }) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
+<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6">
+      <DialogTitle className="mb-4">Order Details</DialogTitle>
+      <DialogDescription className="mb-6 text-slate-600">View and update order information</DialogDescription>
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">

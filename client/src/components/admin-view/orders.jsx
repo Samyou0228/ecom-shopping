@@ -32,7 +32,9 @@ function AdminOrdersView() {
     dispatch(getAllOrdersForAdmin());
   }, [dispatch]);
 
-  console.log(orderDetails, "orderList");
+  const isLoading = useSelector((state) => state.adminOrder.isLoading);
+
+// console.log(orderDetails, "orderList");
 
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);
@@ -57,7 +59,13 @@ function AdminOrdersView() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orderList && orderList.length > 0
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8 h-32">
+                  <div>Loading orders...</div>
+                </TableCell>
+              </TableRow>
+            ) : orderList && orderList.length > 0
               ? orderList.map((orderItem) => (
                   <TableRow key={orderItem?._id}>
                     <TableCell>{orderItem?._id}</TableCell>
@@ -96,7 +104,13 @@ function AdminOrdersView() {
                     </TableCell>
                   </TableRow>
                 ))
-              : null}
+              : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8 h-32">
+                    <div>No orders found</div>
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
       </CardContent>
