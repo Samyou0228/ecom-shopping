@@ -46,6 +46,8 @@ function AdminProducts() {
     brand: "",
     featured: false
   });
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { productList } = useSelector((state) => state.adminProducts);
   const { categories, brands } = useSelector((state) => state.superAdmin);
@@ -120,11 +122,13 @@ function AdminProducts() {
     });
   }
 
-  function isFormValid() {
-    return Object.keys(formData)
-      .filter((currentKey) => currentKey !== "averageReview")
+function isFormValid() {
+    const optionalFields = ['description', 'salePrice', 'totalStock'];
+    const requiredFields = Object.keys(formData)
+      .filter((currentKey) => currentKey !== "averageReview" && !optionalFields.includes(currentKey))
       .map((key) => formData[key] !== "")
       .every((item) => item);
+    return requiredFields;
   }
 
   useEffect(() => {
@@ -241,6 +245,10 @@ function AdminProducts() {
                 setCurrentEditedId={setCurrentEditedId}
                 product={productItem}
                 handleDelete={handleDelete}
+                openDetailsModal={(product) => {
+                  setSelectedProduct(product);
+                  setShowDetailsModal(true);
+                }}
               />
             ))
           : (
@@ -251,8 +259,74 @@ function AdminProducts() {
                 <p className="text-sm text-slate-500">Try adjusting your filters or add new products</p>
               </div>
             </div>
-          )}
+        )}
       </div>
+
+      {/* Product Details Modal */}
+      <Sheet open={showDetailsModal} onOpenChange={setShowDetailsModal}>
+        <SheetContent side="right" className="w-[425px] sm:w-[540px]">
+          <SheetHeader>
+            <SheetTitle>Product Details</SheetTitle>
+          </SheetHeader>
+          {selectedProduct && (
+            <div className="space-y-6 py-4">
+              <div className="aspect-[4/3] bg-slate-100 rounded-2xl overflow-hidden">
+                <img 
+                  src={selectedProduct.image} 
+                  alt={selectedProduct.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-3">{selectedProduct.title}</h2>
+                <p className="text-slate-600 leading-relaxed mb-6">{selectedProduct.description || 'No description available.'}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-500">Category</span>
+                      <span className="font-semibold text-slate-900 capitalize">{selectedProduct.category}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-500">Brand</span>
+                      <span className="font-semibold text-slate-900 capitalize">{selectedProduct.brand}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-500">Stock</span>
+                      <span className="font-semibold text-slate-900">{selectedProduct.totalStock || 0}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-500">Price</span>
+                      <span className="text-2xl font-bold text-primary">${selectedProduct.price}</span>
+                    </div>
+                    {selectedProduct.salePrice > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">Sale Price</span>
+                        <span className="text-xl font-bold text-green-600 line-through">${selectedProduct.price}</span>
+                        <span className="text-2xl font-bold text-green-600">${selectedProduct.salePrice}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-500">Avg Rating</span>
+                      <span className="font-semibold text-amber-600">{(selectedProduct.averageReview || 0).toFixed(1)} / 5</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-6 border-t border-slate-200 space-y-1 text-xs text-slate-500">
+                <div>ID: {selectedProduct._id}</div>
+                <div>Created: {new Date(selectedProduct.createdAt).toLocaleDateString()}</div>
+                <div>Updated: {new Date(selectedProduct.updatedAt).toLocaleDateString()}</div>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
       <Sheet
         open={openCreateProductsDialog}
         onOpenChange={() => {
