@@ -14,27 +14,28 @@ const getFilteredProducts = async (req, res) => {
       filters.brand = { $in: brand.split(",") };
     }
 
+    if (filters.featured === 'true') {
+      filters.featured = true;
+    }
+
     let sort = {};
 
     switch (sortBy) {
       case "price-lowtohigh":
         sort.price = 1;
-
         break;
       case "price-hightolow":
         sort.price = -1;
-
+        break;
+      case "rating-high-to-low":
+        sort.averageReview = -1;
         break;
       case "title-atoz":
         sort.title = 1;
-
         break;
-
       case "title-ztoa":
         sort.title = -1;
-
         break;
-
       default:
         sort.price = 1;
         break;

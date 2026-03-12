@@ -88,11 +88,12 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             </div>
           </div>
         </div>
-        {orderDetails?.orderStatus === "delivered" && orderDetails?.cartItems?.[0] && (
-          <div>
-            <OrderRatingForm productId={orderDetails.cartItems[0].productId} orderId={orderDetails._id} />
+        {orderDetails?.orderStatus === "delivered" && orderDetails?.cartItems && orderDetails.cartItems.map((item, index) => (
+          <div key={index}>
+            <h4 className="font-semibold mb-2">{item.title}</h4>
+            <OrderRatingForm productId={item.productId} orderId={orderDetails._id} />
           </div>
-        )}
+        ))}
       </div>
     </DialogContent>
   );

@@ -112,21 +112,21 @@ function ShoppingProductTile({
             </div>
 
             {/* Rating */}
-            {product?.rating && (
+            {product?.averageReview > 0 && (
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={`w-4 h-4 ${
-                        i < Math.floor(product.rating)
+                        i < Math.floor(product.averageReview)
                           ? "text-yellow-400 fill-yellow-400"
                           : "text-slate-300"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-slate-600">({product.rating}/5)</span>
+                <span className="text-sm text-slate-600">({product.averageReview.toFixed(1)})</span>
               </div>
             )}
           </div>

@@ -33,6 +33,18 @@ function ProductFilter({ filters, handleFilter }) {
         <h2 className="text-lg font-extrabold">Filters</h2>
       </div>
       <div className="p-4 space-y-4">
+
+        {/* Featured Filter */}
+        <div className="mb-6">
+          <Label className="flex font-bold items-center gap-2 cursor-pointer">
+            <Checkbox
+              id="featured"
+              checked={filters.featured}
+              onCheckedChange={(checked) => handleFilter('featured', checked ? 'true' : '')}
+            />
+            Featured Products (High Rating)
+          </Label>
+        </div>
         {Object.keys(filterOptions).map((keyItem) => {
           const options = filterOptions[keyItem];
 

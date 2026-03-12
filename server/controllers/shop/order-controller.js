@@ -168,8 +168,14 @@ const capturePayment = async (req, res) => {
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { sort } = req.query;
 
-    const orders = await Order.find({ userId });
+    let sortObj = {};
+    if (sort === 'orderDate:-1') {
+      sortObj.orderDate = -1;
+    }
+
+    const orders = await Order.find({ userId }).sort(sortObj);
 
     if (!orders.length) {
       return res.status(404).json({

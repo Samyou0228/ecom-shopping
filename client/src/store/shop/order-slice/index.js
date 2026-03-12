@@ -35,7 +35,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
     const response = await axios.get(
-      `http://localhost:5000/api/shop/order/list/${userId}`
+      `http://localhost:5000/api/shop/order/list/${userId}?sort=orderDate:-1`
     );
 
     return response.data;
