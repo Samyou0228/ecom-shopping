@@ -14,7 +14,7 @@ function ShoppingProductTile({
   const isOutOfStock = product?.totalStock === 0;
 
   return (
-    <div className="group cursor-pointer">
+    <div className="group cursor-pointer h-full">
       <Card 
         className="w-full h-full flex flex-col shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 border border-slate-100 overflow-hidden"
         onClick={() => handleGetProductDetails(product?._id)}

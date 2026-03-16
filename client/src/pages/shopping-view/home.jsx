@@ -125,7 +125,7 @@ function ShoppingHome() {
             <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
-        
+
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white shadow-lg">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
           <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
@@ -142,7 +142,7 @@ function ShoppingHome() {
             <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </div>
         </div>
-        
+
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-lg">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full"></div>
           <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full"></div>
@@ -164,19 +164,17 @@ function ShoppingHome() {
       {/* Hero Carousel */}
       <div className="relative w-full max-w-6xl mx-auto h-[400px] rounded-2xl overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent z-10"></div>
-        
+
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
-              <img
-                src={slide?.image}
-                key={index}
-                className={`${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-all duration-1000 transform ${
-                  index === currentSlide ? "scale-100" : "scale-105"
+            <img
+              src={slide?.image}
+              key={index}
+              className={`${index === currentSlide ? "opacity-100" : "opacity-0"
+                } absolute top-0 left-0 w-full h-full object-cover transition-all duration-1000 transform ${index === currentSlide ? "scale-100" : "scale-105"
                 }`}
-              />
-            ))
+            />
+          ))
           : (
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <div className="text-center text-white">
@@ -185,7 +183,7 @@ function ShoppingHome() {
               </div>
             </div>
           )}
-        
+
         {/* Slide Indicators */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
           {featureImageList && featureImageList.length > 0 ? (
@@ -193,11 +191,10 @@ function ShoppingHome() {
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? "bg-white scale-125 shadow-lg" 
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                    ? "bg-white scale-125 shadow-lg"
                     : "bg-white/50 hover:bg-white/80"
-                }`}
+                  }`}
               />
             ))
           ) : null}
@@ -249,7 +246,7 @@ function ShoppingHome() {
             </div>
           </div>
         </div>
-        
+
         <div className="p-5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Categories */}
@@ -294,7 +291,7 @@ function ShoppingHome() {
                 ))}
               </div>
             </div>
-            
+
             {/* Brands */}
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-3">
@@ -344,19 +341,19 @@ function ShoppingHome() {
             </div>
           </div>
         </div>
-        
+
         <div className="p-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
-                  <div key={productItem._id} className="transform hover:scale-105 transition-transform duration-300">
-                    <ShoppingProductTile
-                      handleGetProductDetails={handleGetProductDetails}
-                      product={productItem}
-                      handleAddtoCart={handleAddtoCart}
-                    />
-                  </div>
-                ))
+                <div key={productItem._id} className="transform hover:scale-105 transition-transform duration-300 h-full">
+                  <ShoppingProductTile
+                    handleGetProductDetails={handleGetProductDetails}
+                    product={productItem}
+                    handleAddtoCart={handleAddtoCart}
+                  />
+                </div>
+              ))
               : (
                 <div className="col-span-full text-center py-8">
                   <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-6 rounded-xl inline-block shadow-lg">
