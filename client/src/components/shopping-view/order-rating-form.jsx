@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 import { useToast } from "../ui/use-toast";
 
-function OrderRatingForm({ productId, orderId }) {
+function OrderRatingForm({ productId, orderId, onSuccess }) {
   const [rating, setRating] = useState(0);
   const [reviewMsg, setReviewMsg] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { toast } = useToast();
@@ -34,13 +35,15 @@ function OrderRatingForm({ productId, orderId }) {
         userName: user?.userName,
         reviewMessage: reviewMsg,
         reviewValue: rating,
-        orderId, // Pass order ID for tracking
+        orderId,
       })
     ).then((data) => {
       if (data?.payload?.success) {
         setRating(0);
         setReviewMsg("");
+        setIsSubmitted(true);
         dispatch(getReviews(productId));
+        if (onSuccess) onSuccess();
         toast({
           title: "Review submitted successfully!",
         });
@@ -58,6 +61,22 @@ function OrderRatingForm({ productId, orderId }) {
     });
   }
 
+  if (isSubmitted) {
+    return (
+      <div className="bg-green-50 p-6 rounded-xl border border-green-200">
+        <h3 className="text-lg font-semibold mb-2 text-green-800">Thank you for your rating!</h3>
+        <p className="text-sm text-green-700 mb-4">Your review has been submitted successfully.</p>
+        <Button variant="outline" onClick={() => {
+          setIsSubmitted(false);
+          setRating(0);
+          setReviewMsg("");
+        }}>
+          Rate again
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
       <h3 className="text-lg font-semibold mb-4 text-slate-800">Rate this product</h3>
@@ -70,25 +89,12 @@ function OrderRatingForm({ productId, orderId }) {
         placeholder="Share your experience (optional)..."
         className="mb-4"
       />
-      <Button 
-        onClick={handleSubmitReview} 
+      <Button
+        onClick={handleSubmitReview}
         disabled={rating === 0}
         className="w-full"
       >
         Submit Rating
-      </Button>
-    </div>
-  );
-
-  return (
-    <div className="bg-green-50 p-6 rounded-xl border border-green-200">
-      <h3 className="text-lg font-semibold mb-2 text-green-800">Thank you for your rating!</h3>
-      <p className="text-sm text-green-700 mb-4">Your review has been submitted successfully.</p>
-      <Button variant="outline" onClick={() => {
-        setRating(0);
-        setReviewMsg("");
-      }}>
-        Rate another product
       </Button>
     </div>
   );

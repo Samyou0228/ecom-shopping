@@ -1,4 +1,4 @@
- import { Input } from "../ui/input";
+import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -37,6 +37,7 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
+            disabled={getControlItem.disabled}
             className="border-black/20 text-black placeholder:text-black/40"
           />
         );
@@ -52,6 +53,7 @@ function CommonForm({
               })
             }
             value={value}
+            disabled={getControlItem.disabled}
           >
             <SelectTrigger className="w-full border-black/20">
               <SelectValue placeholder={getControlItem.label} />
@@ -59,10 +61,10 @@ function CommonForm({
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
                 ? getControlItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
-                      {optionItem.label}
-                    </SelectItem>
-                  ))
+                  <SelectItem key={optionItem.id} value={optionItem.id}>
+                    {optionItem.label}
+                  </SelectItem>
+                ))
                 : null}
             </SelectContent>
           </Select>
@@ -82,6 +84,7 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
+            disabled={getControlItem.disabled}
             className="border-black/20 text-black placeholder:text-black/40"
           />
         );

@@ -42,13 +42,12 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             <p className="font-medium">Order Status</p>
             <Label>
               <Badge
-                className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "confirmed"
+                className={`py-1 px-3 ${orderDetails?.orderStatus === "confirmed"
                     ? "bg-green-500"
                     : orderDetails?.orderStatus === "rejected"
-                    ? "bg-red-600"
-                    : "bg-black"
-                }`}
+                      ? "bg-red-600"
+                      : "bg-black"
+                  }`}
               >
                 {orderDetails?.orderStatus}
               </Badge>
@@ -62,20 +61,20 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
-                    <li
-                      key={item?.productId || item?._id}
-                      className="flex items-center justify-between"
-                    >
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ${item.price}</span>
-                    </li>
-                  ))
+                  <li
+                    key={item?.productId || item?._id}
+                    className="flex items-center justify-between"
+                  >
+                    <span>Title: {item.title}</span>
+                    <span>Quantity: {item.quantity}</span>
+                    <span>Price: ${item.price}</span>
+                  </li>
+                ))
                 : null}
             </ul>
           </div>
         </div>
-      <div className="grid gap-4">
+        <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
@@ -89,9 +88,19 @@ function ShoppingOrderDetailsView({ orderDetails }) {
           </div>
         </div>
         {orderDetails?.orderStatus === "delivered" && orderDetails?.cartItems && orderDetails.cartItems.map((item, index) => (
-          <div key={index}>
-            <h4 className="font-semibold mb-2">{item.title}</h4>
-            <OrderRatingForm productId={item.productId} orderId={orderDetails._id} />
+          <div key={index} className="mt-4 border-t pt-4">
+            <h4 className="font-semibold mb-2 text-slate-800">{item.title}</h4>
+            {!item.isReviewed ? (
+              <OrderRatingForm
+                productId={item.productId}
+                orderId={orderDetails._id}
+                onSuccess={() => handleFetchOrderDetails(orderDetails._id)}
+              />
+            ) : (
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium text-center">
+                Review submitted for this item.
+              </div>
+            )}
           </div>
         ))}
       </div>

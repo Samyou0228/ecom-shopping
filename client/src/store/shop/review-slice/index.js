@@ -8,13 +8,20 @@ const initialState = {
 
 export const addReview = createAsyncThunk(
   "/order/addReview",
-  async (formdata) => {
-    const response = await axios.post(
-      `http://localhost:5000/api/shop/review/add`,
-      formdata
-    );
+  async (formdata, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/shop/review/add`,
+        formdata,
+        {
+          withCredentials: true,
+        }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
   }
 );
 

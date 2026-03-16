@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const ProductReview = require("../../models/Review");
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -178,9 +179,9 @@ const getAllOrdersByUser = async (req, res) => {
     const orders = await Order.find({ userId }).sort(sortObj);
 
     if (!orders.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No orders found!",
+      return res.status(200).json({
+        success: true,
+        data: [],
       });
     }
 
@@ -210,9 +211,28 @@ const getOrderDetails = async (req, res) => {
       });
     }
 
+    // Enrich cartItems with isReviewed flag
+    const cartItemsWithReviewStatus = await Promise.all(
+      order.cartItems.map(async (item) => {
+        const review = await ProductReview.findOne({
+          orderId: order._id,
+          productId: item.productId,
+        });
+        return {
+          ...item._doc,
+          isReviewed: !!review,
+        };
+      })
+    );
+
+    const enrichedOrder = {
+      ...order._doc,
+      cartItems: cartItemsWithReviewStatus,
+    };
+
     res.status(200).json({
       success: true,
-      data: order,
+      data: enrichedOrder,
     });
   } catch (e) {
     console.log(e);

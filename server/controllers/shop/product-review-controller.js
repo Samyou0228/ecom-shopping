@@ -4,40 +4,48 @@ const ProductReview = require("../../models/Review");
 
 const addProductReview = async (req, res) => {
   try {
-  const { productId, userId, userName, reviewMessage, reviewValue } =
+    const { productId, userId, userName, reviewMessage, reviewValue, orderId } =
       req.body;
-    const { withCredentials } = req.headers;
 
-    if (!req.cookies?.jwt) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-
-    const order = await Order.findOne({
+    // 1. Get all delivered orders for this user and product
+    const deliveredOrders = await Order.find({
       userId,
       "cartItems.productId": productId,
       orderStatus: "delivered",
     });
 
-    if (!order) {
+    if (!deliveredOrders.length) {
       return res.status(403).json({
         success: false,
         message: "You need to purchase product to review it.",
       });
     }
 
-    const checkExistinfReview = await ProductReview.findOne({
+    // 2. Get all existing reviews for this user and product
+    const existingReviews = await ProductReview.find({
       productId,
       userId,
     });
 
-    if (checkExistinfReview) {
-      return res.status(400).json({
-        success: false,
-        message: "You already reviewed this product!",
-      });
+    // 3. Logic: If user specifically clicked "Submit Rating" from an Order Details view, 
+    // we should check that specific orderId.
+    if (orderId) {
+      const isAlreadyReviewedThisOrder = existingReviews.some(rev => rev.orderId === orderId);
+      if (isAlreadyReviewedThisOrder) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already reviewed this purchase!",
+        });
+      }
+    } else {
+      // If they are on the general Product Page, they can review if 
+      // Total Delivered Purchases > Total Reviews
+      if (existingReviews.length >= deliveredOrders.length) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already reviewed all your purchases of this product!",
+        });
+      }
     }
 
     const newReview = new ProductReview({
@@ -46,6 +54,7 @@ const addProductReview = async (req, res) => {
       userName,
       reviewMessage,
       reviewValue,
+      orderId: orderId || deliveredOrders[0]._id, // Associate with an order if none provided
     });
 
     await newReview.save();

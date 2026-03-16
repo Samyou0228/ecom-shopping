@@ -54,7 +54,7 @@ function AdminOrderDetailsView({ orderDetails }) {
   }
 
   return (
-<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6">
+    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6">
       <DialogTitle className="mb-4">Order Details</DialogTitle>
       <DialogDescription className="mb-6 text-slate-600">View and update order information</DialogDescription>
       <div className="grid gap-6">
@@ -83,13 +83,12 @@ function AdminOrderDetailsView({ orderDetails }) {
             <p className="font-medium">Order Status</p>
             <Label>
               <Badge
-                className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "confirmed"
-                    ? "bg-green-500"
-                    : orderDetails?.orderStatus === "rejected"
+                className={`py-1 px-3 ${orderDetails?.orderStatus === "confirmed"
+                  ? "bg-green-500"
+                  : orderDetails?.orderStatus === "rejected"
                     ? "bg-red-600"
                     : "bg-black"
-                }`}
+                  }`}
               >
                 {orderDetails?.orderStatus}
               </Badge>
@@ -103,15 +102,15 @@ function AdminOrderDetailsView({ orderDetails }) {
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
-                    <li
-                      key={item?.productId || item?._id}
-                      className="flex items-center justify-between"
-                    >
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ${item.price}</span>
-                    </li>
-                  ))
+                  <li
+                    key={item?.productId || item?._id}
+                    className="flex items-center justify-between"
+                  >
+                    <span>Title: {item.title}</span>
+                    <span>Quantity: {item.quantity}</span>
+                    <span>Price: ${item.price}</span>
+                  </li>
+                ))
                 : null}
             </ul>
           </div>
@@ -144,12 +143,14 @@ function AdminOrderDetailsView({ orderDetails }) {
                   { id: "delivered", label: "Delivered" },
                   { id: "rejected", label: "Rejected" },
                 ],
+                disabled: orderDetails?.orderStatus === "delivered" || orderDetails?.orderStatus === "rejected",
               },
             ]}
             formData={formData}
             setFormData={setFormData}
             buttonText={"Update Order Status"}
             onSubmit={handleUpdateStatus}
+            isBtnDisabled={orderDetails?.orderStatus === "delivered" || orderDetails?.orderStatus === "rejected"}
           />
         </div>
       </div>

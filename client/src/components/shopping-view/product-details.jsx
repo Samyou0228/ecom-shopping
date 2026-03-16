@@ -10,6 +10,7 @@ import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { getAllOrdersByUserId } from "@/store/shop/order-slice";
 import { useToast } from "../ui/use-toast";
 import { setProductDetails } from "@/store/shop/products-slice";
 import { Label } from "../ui/label";
@@ -24,6 +25,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
+  const { orderList } = useSelector((state) => state.shopOrder);
 
   const { toast } = useToast();
 
@@ -117,6 +119,21 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       dispatch(getReviews(productDetails?._id));
     }
   }, [productDetails, dispatch]);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getAllOrdersByUserId(user.id));
+    }
+  }, [user, dispatch]);
+
+  const deliveredOrdersCount = orderList?.filter(order =>
+    order.orderStatus === 'delivered' &&
+    order.cartItems.some(item => item.productId === productDetails?._id)
+  ).length || 0;
+
+  const userReviewsCount = reviews?.filter(rev => rev.userId === user?.id).length || 0;
+
+  const canReview = user && deliveredOrdersCount > userReviewsCount;
 
   const averageReview =
     reviews && reviews.length > 0
@@ -215,27 +232,35 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 <h1>No Reviews</h1>
               )}
             </div>
-            <div className="mt-10 flex-col flex gap-2">
-              <Label>Write a review</Label>
-              <div className="flex gap-1">
-                <StarRatingComponent
-                  rating={rating}
-                  handleRatingChange={handleRatingChange}
+            {canReview ? (
+              <div className="mt-10 flex-col flex gap-2">
+                <Label>Write a review</Label>
+                <div className="flex gap-1">
+                  <StarRatingComponent
+                    rating={rating}
+                    handleRatingChange={handleRatingChange}
+                  />
+                </div>
+                <Input
+                  name="reviewMsg"
+                  value={reviewMsg}
+                  onChange={(event) => setReviewMsg(event.target.value)}
+                  placeholder="Write a review..."
                 />
+                <Button
+                  onClick={handleAddReview}
+                  disabled={reviewMsg.trim() === ""}
+                >
+                  Submit
+                </Button>
               </div>
-              <Input
-                name="reviewMsg"
-                value={reviewMsg}
-                onChange={(event) => setReviewMsg(event.target.value)}
-                placeholder="Write a review..."
-              />
-              <Button
-                onClick={handleAddReview}
-                disabled={reviewMsg.trim() === ""}
-              >
-                Submit
-              </Button>
-            </div>
+            ) : (
+              <div className="mt-10 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <p className="text-slate-600 text-center font-medium">
+                  Only buyers who have received this product can write a review.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>
