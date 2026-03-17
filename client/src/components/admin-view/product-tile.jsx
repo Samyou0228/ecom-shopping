@@ -12,7 +12,7 @@ function AdminProductTile({
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div>
-        <div 
+        <div
           className="relative cursor-pointer group"
           onClick={() => openDetailsModal(product)}
         >
@@ -29,9 +29,8 @@ function AdminProductTile({
           <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
           <div className="flex justify-between items-center mb-2">
             <span
-              className={`${
-                product?.salePrice > 0 ? "line-through" : ""
-              } text-lg font-semibold text-primary`}
+              className={`${product?.salePrice > 0 ? "line-through" : ""
+                } text-lg font-semibold text-primary`}
             >
               ${product?.price}
             </span>
@@ -40,18 +39,20 @@ function AdminProductTile({
             ) : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center">
-          <Button
-            onClick={() => {
-              setOpenCreateProductsDialog(true);
-              setCurrentEditedId(product?._id);
-              setFormData(product);
-            }}
-          >
-            Edit
-          </Button>
-          <Button onClick={() => handleDelete(product?._id)}>Delete</Button>
-        </CardFooter>
+        {setFormData && setOpenCreateProductsDialog && setCurrentEditedId && handleDelete ? (
+          <CardFooter className="flex justify-between items-center">
+            <Button
+              onClick={() => {
+                setOpenCreateProductsDialog(true);
+                setCurrentEditedId(product?._id);
+                setFormData(product);
+              }}
+            >
+              Edit
+            </Button>
+            <Button onClick={() => handleDelete(product?._id)}>Delete</Button>
+          </CardFooter>
+        ) : null}
       </div>
     </Card>
   );
