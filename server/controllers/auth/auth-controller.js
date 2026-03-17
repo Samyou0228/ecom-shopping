@@ -119,7 +119,12 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Set to true if using HTTPS
+      sameSite: "lax",
+      path: "/",
+    }).json({
       success: true,
       message: "Logged in successfully",
       user: {

@@ -130,8 +130,8 @@ export const fetchCategoriesAndBrands = createAsyncThunk(
   "/super/fetchCategoriesAndBrands",
   async () => {
     const [categoriesResponse, brandsResponse] = await Promise.all([
-      axios.get("http://localhost:5000/api/common/category/categories"),
-      axios.get("http://localhost:5000/api/common/category/brands"),
+      axios.get("http://localhost:5000/api/common/category/categories", { withCredentials: true }),
+      axios.get("http://localhost:5000/api/common/category/brands", { withCredentials: true }),
     ]);
 
     return {

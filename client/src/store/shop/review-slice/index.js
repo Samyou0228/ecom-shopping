@@ -27,7 +27,8 @@ export const addReview = createAsyncThunk(
 
 export const getReviews = createAsyncThunk("/order/getReviews", async (id) => {
   const response = await axios.get(
-    `http://localhost:5000/api/shop/review/${id}`
+    `http://localhost:5000/api/shop/review/${id}`,
+    { withCredentials: true }
   );
 
   return response.data;
