@@ -13,13 +13,13 @@ function AdminProductTile({
     <Card className="w-full max-w-sm mx-auto">
       <div>
         <div
-          className="relative cursor-pointer group"
+          className="relative cursor-pointer group bg-white rounded-t-lg overflow-hidden"
           onClick={() => openDetailsModal(product)}
         >
           <img
             src={product?.image}
             alt={product?.title}
-            className="w-full h-[300px] object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-[300px] object-contain p-2 transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center rounded-t-lg">
             <span className="text-white font-medium text-lg px-4 py-2 bg-black/50 rounded-lg backdrop-blur-sm">View Details</span>

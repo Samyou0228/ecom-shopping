@@ -61,7 +61,7 @@ function AdminProducts() {
     const categoryMatch = !filters.category || product.category === filters.category;
     const brandMatch = !filters.brand || product.brand === filters.brand;
     const featuredMatch = !filters.featured || product.featured;
-    const searchMatch = !searchTerm || 
+    const searchMatch = !searchTerm ||
       product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product._id.includes(searchTerm);
     return categoryMatch && brandMatch && featuredMatch && searchMatch;
@@ -72,36 +72,36 @@ function AdminProducts() {
 
     currentEditedId !== null
       ? dispatch(
-          editProduct({
-            id: currentEditedId,
-            formData,
-          })
-        ).then((data) => {
-          console.log(data, "edit");
-
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setFormData(initialFormData);
-            setOpenCreateProductsDialog(false);
-            setCurrentEditedId(null);
-          }
+        editProduct({
+          id: currentEditedId,
+          formData,
         })
+      ).then((data) => {
+        console.log(data, "edit");
+
+        if (data?.payload?.success) {
+          dispatch(fetchAllProducts());
+          setFormData(initialFormData);
+          setOpenCreateProductsDialog(false);
+          setCurrentEditedId(null);
+        }
+      })
       : dispatch(
-          addNewProduct({
-            ...formData,
-            image: uploadedImageUrl,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setOpenCreateProductsDialog(false);
-            setImageFile(null);
-            setFormData(initialFormData);
-            toast({
-              title: "Product add successfully",
-            });
-          }
-        });
+        addNewProduct({
+          ...formData,
+          image: uploadedImageUrl,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllProducts());
+          setOpenCreateProductsDialog(false);
+          setImageFile(null);
+          setFormData(initialFormData);
+          toast({
+            title: "Product add successfully",
+          });
+        }
+      });
   }
 
   function handleDelete(getCurrentProductId) {
@@ -127,7 +127,7 @@ function AdminProducts() {
     });
   }
 
-function isFormValid() {
+  function isFormValid() {
     const optionalFields = ['description', 'salePrice', 'totalStock'];
     const requiredFields = Object.keys(formData)
       .filter((currentKey) => currentKey !== "averageReview" && !optionalFields.includes(currentKey))
@@ -238,8 +238,8 @@ function isFormValid() {
               <Button onClick={() => setOpenCreateProductsDialog(true)}>
                 Add New Product
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleClearFilters}
                 className="border-slate-300 hover:bg-slate-50"
               >
@@ -253,19 +253,19 @@ function isFormValid() {
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {filteredProducts && filteredProducts.length > 0
           ? filteredProducts.map((productItem) => (
-              <AdminProductTile
-                key={productItem?._id}
-                setFormData={setFormData}
-                setOpenCreateProductsDialog={setOpenCreateProductsDialog}
-                setCurrentEditedId={setCurrentEditedId}
-                product={productItem}
-                handleDelete={handleDelete}
-                openDetailsModal={(product) => {
-                  setSelectedProduct(product);
-                  setShowDetailsModal(true);
-                }}
-              />
-            ))
+            <AdminProductTile
+              key={productItem?._id}
+              setFormData={setFormData}
+              setOpenCreateProductsDialog={setOpenCreateProductsDialog}
+              setCurrentEditedId={setCurrentEditedId}
+              product={productItem}
+              handleDelete={handleDelete}
+              openDetailsModal={(product) => {
+                setSelectedProduct(product);
+                setShowDetailsModal(true);
+              }}
+            />
+          ))
           : (
             <div className="col-span-full text-center py-8">
               <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-6 rounded-xl inline-block shadow-lg">
@@ -274,22 +274,22 @@ function isFormValid() {
                 <p className="text-sm text-slate-500">Try adjusting your filters or add new products</p>
               </div>
             </div>
-        )}
+          )}
       </div>
 
       {/* Product Details Modal */}
       <Sheet open={showDetailsModal} onOpenChange={setShowDetailsModal}>
-        <SheetContent side="right" className="w-[425px] sm:w-[540px]">
+        <SheetContent side="right" className="w-[425px] sm:w-[540px] overflow-auto">
           <SheetHeader>
             <SheetTitle>Product Details</SheetTitle>
           </SheetHeader>
           {selectedProduct && (
             <div className="space-y-6 py-4">
-              <div className="aspect-[4/3] bg-slate-100 rounded-2xl overflow-hidden">
-                <img 
-                  src={selectedProduct.image} 
+              <div className="aspect-square bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-inner">
+                <img
+                  src={selectedProduct.image}
                   alt={selectedProduct.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain p-6 transition-transform duration-300 hover:scale-105"
                 />
               </div>
               <div>
@@ -333,9 +333,9 @@ function isFormValid() {
                   </div>
                 </div>
               </div>
-                <div className="pt-6 border-t border-slate-200 space-y-1 text-xs text-slate-500">
-                  <div>ID: {selectedProduct._id}</div>
-                </div>
+              <div className="pt-6 border-t border-slate-200 space-y-1 text-xs text-slate-500">
+                <div>ID: {selectedProduct._id}</div>
+              </div>
             </div>
           )}
         </SheetContent>
