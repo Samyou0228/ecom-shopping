@@ -317,13 +317,13 @@ function AdminProducts() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-slate-500">Price</span>
-                      <span className="text-2xl font-bold text-primary">${selectedProduct.price}</span>
+                      <span className="text-2xl font-bold text-primary">₹{selectedProduct.price}</span>
                     </div>
                     {selectedProduct.salePrice > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-slate-500">Sale Price</span>
-                        <span className="text-xl font-bold text-green-600 line-through">${selectedProduct.price}</span>
-                        <span className="text-2xl font-bold text-green-600">${selectedProduct.salePrice}</span>
+                        <span className="text-xl font-bold text-green-600 line-through">₹{selectedProduct.price}</span>
+                        <span className="text-2xl font-bold text-green-600">₹{selectedProduct.salePrice}</span>
                       </div>
                     )}
                     <div className="flex items-center justify-between">

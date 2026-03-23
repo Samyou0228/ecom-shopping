@@ -34,7 +34,7 @@ function AdminOrdersView() {
 
   const isLoading = useSelector((state) => state.adminOrder.isLoading);
 
-// console.log(orderDetails, "orderList");
+  // console.log(orderDetails, "orderList");
 
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);
@@ -67,43 +67,42 @@ function AdminOrdersView() {
               </TableRow>
             ) : orderList && orderList.length > 0
               ? orderList.map((orderItem) => (
-                  <TableRow key={orderItem?._id}>
-                    <TableCell>{orderItem?._id}</TableCell>
-                    <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`py-1 px-3 ${
-                          orderItem?.orderStatus === "confirmed"
-                            ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
+                <TableRow key={orderItem?._id}>
+                  <TableCell>{orderItem?._id}</TableCell>
+                  <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
+                          ? "bg-green-500"
+                          : orderItem?.orderStatus === "rejected"
                             ? "bg-red-600"
                             : "bg-black"
                         }`}
+                    >
+                      {orderItem?.orderStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>₹{orderItem?.totalAmount}</TableCell>
+                  <TableCell>
+                    <Dialog
+                      open={openDetailsDialog}
+                      onOpenChange={() => {
+                        setOpenDetailsDialog(false);
+                        dispatch(resetOrderDetails());
+                      }}
+                    >
+                      <Button
+                        onClick={() =>
+                          handleFetchOrderDetails(orderItem?._id)
+                        }
                       >
-                        {orderItem?.orderStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>${orderItem?.totalAmount}</TableCell>
-                    <TableCell>
-                      <Dialog
-                        open={openDetailsDialog}
-                        onOpenChange={() => {
-                          setOpenDetailsDialog(false);
-                          dispatch(resetOrderDetails());
-                        }}
-                      >
-                        <Button
-                          onClick={() =>
-                            handleFetchOrderDetails(orderItem?._id)
-                          }
-                        >
-                          View Details
-                        </Button>
-                        <AdminOrderDetailsView orderDetails={orderDetails} />
-                      </Dialog>
-                    </TableCell>
-                  </TableRow>
-                ))
+                        View Details
+                      </Button>
+                      <AdminOrderDetailsView orderDetails={orderDetails} />
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
               : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 h-32">

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { CreditCard, Truck, MapPin, Shield, Percent, CheckCircle, ShoppingBag, DollarSign } from "lucide-react";
+import { CreditCard, Truck, MapPin, Shield, Percent, CheckCircle, ShoppingBag, IndianRupee } from "lucide-react";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -294,7 +294,7 @@ function ShoppingCheckout() {
             <div className="mt-8 border-t border-slate-200 pt-6 space-y-4">
               <div className="flex justify-between items-center py-3 border-b border-slate-100">
                 <span className="text-slate-600 text-lg">Subtotal</span>
-                <span className="font-semibold text-xl">${totalCartAmount.toFixed(2)}</span>
+                <span className="font-semibold text-xl">₹{totalCartAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-slate-100">
                 <span className="text-slate-600 text-lg">Shipping</span>
@@ -302,13 +302,13 @@ function ShoppingCheckout() {
               </div>
               <div className="flex justify-between items-center py-3 border-b border-slate-100">
                 <span className="text-slate-600 text-lg">Tax (8%)</span>
-                <span className="font-semibold text-xl">${(totalCartAmount * 0.08).toFixed(2)}</span>
+                <span className="font-semibold text-xl">₹{(totalCartAmount * 0.08).toFixed(2)}</span>
               </div>
               <div className="border-t border-slate-200 pt-4">
                 <div className="flex justify-between items-center text-lg font-bold text-slate-800">
                   <span className="text-xl">Total</span>
                   <span className="text-3xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                    ${(totalCartAmount + totalCartAmount * 0.08).toFixed(2)}
+                    ₹{(totalCartAmount + totalCartAmount * 0.08).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -330,7 +330,7 @@ function ShoppingCheckout() {
                   <div className="flex items-center justify-center gap-4">
                     <CreditCard className="w-6 h-6" />
                     <span className="text-lg">Complete Payment</span>
-                    <DollarSign className="w-6 h-6" />
+                    <IndianRupee className="w-6 h-6" />
                   </div>
                 )}
               </Button>

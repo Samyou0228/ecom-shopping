@@ -117,17 +117,17 @@ function UserCartItemsContent({ cartItem }) {
               {isOnSale ? (
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-blue-600">${salePrice.toFixed(2)}</span>
-                    <span className="text-xs text-slate-400 line-through">${originalPrice.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-blue-600">₹{salePrice.toFixed(2)}</span>
+                    <span className="text-xs text-slate-400 line-through">₹{originalPrice.toFixed(2)}</span>
                   </div>
                 </div>
               ) : (
-                <span className="text-lg font-bold text-slate-800">${originalPrice.toFixed(2)}</span>
+                <span className="text-lg font-bold text-slate-800">₹{originalPrice.toFixed(2)}</span>
               )}
             </div>
 
             <div className="text-right">
-              <span className="block text-lg font-extrabold text-slate-900">${totalPrice.toFixed(2)}</span>
+              <span className="block text-lg font-extrabold text-slate-900">₹{totalPrice.toFixed(2)}</span>
             </div>
           </div>
 
@@ -156,7 +156,7 @@ function UserCartItemsContent({ cartItem }) {
             </div>
 
             <div className="text-[10px] text-slate-500 font-medium bg-slate-50 px-2 py-1 rounded-md">
-              Subtotal: ${(totalPrice / cartItem?.quantity).toFixed(2)}/unit
+              Subtotal: ₹{(totalPrice / cartItem?.quantity).toFixed(2)}/unit
             </div>
           </div>
         </div>

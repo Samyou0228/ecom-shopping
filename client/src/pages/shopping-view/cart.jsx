@@ -22,27 +22,27 @@ function ShoppingCart() {
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
       ? cartItems.items.reduce(
-          (sum, currentItem) =>
-            sum +
-            (currentItem?.salePrice > 0
-              ? currentItem?.salePrice
-              : currentItem?.price) *
-              currentItem?.quantity,
-          0
-        )
+        (sum, currentItem) =>
+          sum +
+          (currentItem?.salePrice > 0
+            ? currentItem?.salePrice
+            : currentItem?.price) *
+          currentItem?.quantity,
+        0
+      )
       : 0;
 
   const totalSavings =
     cartItems && cartItems.items && cartItems.items.length > 0
       ? cartItems.items.reduce((sum, currentItem) => {
-          if (currentItem?.salePrice > 0) {
-            return (
-              sum +
-              (currentItem.price - currentItem.salePrice) * currentItem.quantity
-            );
-          }
-          return sum;
-        }, 0)
+        if (currentItem?.salePrice > 0) {
+          return (
+            sum +
+            (currentItem.price - currentItem.salePrice) * currentItem.quantity
+          );
+        }
+        return sum;
+      }, 0)
       : 0;
 
   if (isLoading) {
@@ -116,7 +116,7 @@ function ShoppingCart() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3 border-b border-slate-100">
                     <span className="text-slate-600">Subtotal</span>
-                    <span className="font-semibold text-xl">${totalCartAmount.toFixed(2)}</span>
+                    <span className="font-semibold text-xl">₹{totalCartAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-slate-100">
                     <span className="text-slate-600">Shipping</span>
@@ -124,19 +124,19 @@ function ShoppingCart() {
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-slate-100">
                     <span className="text-slate-600">Tax (8%)</span>
-                    <span className="font-semibold text-xl">${(totalCartAmount * 0.08).toFixed(2)}</span>
+                    <span className="font-semibold text-xl">₹{(totalCartAmount * 0.08).toFixed(2)}</span>
                   </div>
                   {totalSavings > 0 && (
                     <div className="flex justify-between items-center py-3 border-b border-slate-100">
                       <span className="text-green-600 font-semibold">You're Saving</span>
-                      <span className="font-semibold text-xl text-green-600">${totalSavings.toFixed(2)}</span>
+                      <span className="font-semibold text-xl text-green-600">₹{totalSavings.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="border-t border-slate-200 pt-4">
                     <div className="flex justify-between items-center">
                       <span className="text-xl font-bold text-slate-800">Total</span>
                       <span className="text-3xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                        ${(totalCartAmount + totalCartAmount * 0.08).toFixed(2)}
+                        ₹{(totalCartAmount + totalCartAmount * 0.08).toFixed(2)}
                       </span>
                     </div>
                   </div>

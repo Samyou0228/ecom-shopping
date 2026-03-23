@@ -79,18 +79,18 @@ export const addProductFormElements = [
     ],
   },
   {
-    label: "Price",
+    label: "Price (₹)",
     name: "price",
     componentType: "input",
     type: "number",
-    placeholder: "Enter product price",
+    placeholder: "Enter product price in ₹",
   },
   {
-    label: "Sale Price",
+    label: "Sale Price (₹)",
     name: "salePrice",
     componentType: "input",
     type: "number",
-    placeholder: "Enter sale price (optional)",
+    placeholder: "Enter sale price in ₹ (optional)",
   },
   {
     label: "Total Stock",

@@ -94,22 +94,22 @@ function ShoppingProductTile({
                 {isOnSale ? (
                   <>
                     <span className="text-xl font-bold text-red-600">
-                      ${product?.salePrice}
+                      ₹{product?.salePrice}
                     </span>
                     <span className="text-sm text-slate-500 line-through">
-                      ${product?.price}
+                      ₹{product?.price}
                     </span>
                   </>
                 ) : (
                   <span className="text-xl font-bold text-slate-800">
-                    ${product?.price}
+                    ₹{product?.price}
                   </span>
                 )}
               </div>
               {isOnSale && (
                 <div className="flex">
                   <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                    Save ${(product?.price - product?.salePrice).toFixed(0)}
+                    Save ₹{(product?.price - product?.salePrice).toFixed(0)}
                   </span>
                 </div>
               )}
