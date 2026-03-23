@@ -10,7 +10,7 @@ export const getFeatureImages = createAsyncThunk(
   "/order/getFeatureImages",
   async () => {
     const response = await axios.get(
-      `http://localhost:5000/api/common/feature/get`,
+      `/api/common/feature/get`,
       { withCredentials: true }
     );
 
@@ -22,7 +22,7 @@ export const addFeatureImage = createAsyncThunk(
   "/order/addFeatureImage",
   async (image) => {
     const response = await axios.post(
-      `http://localhost:5000/api/common/feature/add`,
+      `/api/common/feature/add`,
       { image },
       { withCredentials: true }
     );
@@ -35,7 +35,7 @@ export const deleteFeatureImage = createAsyncThunk(
   "/order/deleteFeatureImage",
   async (id) => {
     const response = await axios.delete(
-      `http://localhost:5000/api/common/feature/delete/${id}`,
+      `/api/common/feature/delete/${id}`,
       { withCredentials: true }
     );
 

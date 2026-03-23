@@ -195,7 +195,7 @@ function ShoppingListing() {
                       <div className="text-sm text-slate-700">Products</div>
                     </div>
                   </div>
-                  
+
                   {/* Sort Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -251,16 +251,17 @@ function ShoppingListing() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {productList && productList.length > 0
                 ? productList.map((productItem) => (
+                  <div key={productItem._id} className="h-full">
                     <ShoppingProductTile
-                      key={productItem._id}
                       handleGetProductDetails={handleGetProductDetails}
                       product={productItem}
                       handleAddtoCart={handleAddtoCart}
                     />
-                  ))
+                  </div>
+                ))
                 : (
                   <div className="col-span-full text-center py-16">
                     <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-12 rounded-3xl inline-block shadow-2xl">

@@ -139,11 +139,132 @@ const uploadCategoryImage = async (req, res) => {
   }
 };
 
+const updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, image } = req.body;
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    if (name) {
+      category.name = name;
+      category.slug = slugify(name);
+    }
+    if (image !== undefined) category.image = image;
+
+    await category.save();
+
+    res.status(200).json({
+      success: true,
+      data: category,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while updating category",
+    });
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findByIdAndDelete(id);
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while deleting category",
+    });
+  }
+};
+
+const updateBrand = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const brand = await Brand.findById(id);
+    if (!brand) {
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
+    }
+
+    if (name) {
+      brand.name = name;
+      brand.slug = slugify(name);
+    }
+
+    await brand.save();
+
+    res.status(200).json({
+      success: true,
+      data: brand,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while updating brand",
+    });
+  }
+};
+
+const deleteBrand = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const brand = await Brand.findByIdAndDelete(id);
+
+    if (!brand) {
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Brand deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while deleting brand",
+    });
+  }
+};
+
 module.exports = {
   createCategory,
   getCategories,
   createBrand,
   getBrands,
   uploadCategoryImage,
+  updateCategory,
+  deleteCategory,
+  updateBrand,
+  deleteBrand,
 };
 

@@ -20,14 +20,14 @@ function ShoppingCheckout() {
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
       ? cartItems.items.reduce(
-          (sum, currentItem) =>
-            sum +
-            (currentItem?.salePrice > 0
-              ? currentItem?.salePrice
-              : currentItem?.price) *
-              currentItem?.quantity,
-          0
-        )
+        (sum, currentItem) =>
+          sum +
+          (currentItem?.salePrice > 0
+            ? currentItem?.salePrice
+            : currentItem?.price) *
+          currentItem?.quantity,
+        0
+      )
       : 0;
 
   const cartImages =
@@ -119,7 +119,7 @@ function ShoppingCheckout() {
         },
         handler: function (response) {
           axios
-            .post("http://localhost:5000/api/shop/order/capture", {
+            .post("/api/shop/order/capture", {
               orderId: payload.orderId,
               razorpayOrderId: payload.razorpayOrderId,
               razorpayPaymentId: response.razorpay_payment_id,
@@ -176,7 +176,7 @@ function ShoppingCheckout() {
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600"></div>
         )}
-        
+
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white">
             <div className="flex items-center gap-6 mb-4">
@@ -274,11 +274,11 @@ function ShoppingCheckout() {
             <div className="space-y-4">
               {cartItems && cartItems.items && cartItems.items.length > 0
                 ? cartItems.items.map((item) => (
-                    <UserCartItemsContent
-                      key={item?.productId || item?._id}
-                      cartItem={item}
-                    />
-                  ))
+                  <UserCartItemsContent
+                    key={item?.productId || item?._id}
+                    cartItem={item}
+                  />
+                ))
                 : (
                   <div className="text-center py-12">
                     <div className="bg-gradient-to-br from-slate-200 to-slate-300 p-8 rounded-2xl inline-block">
@@ -316,8 +316,8 @@ function ShoppingCheckout() {
 
             {/* Payment Button */}
             <div className="mt-8">
-              <Button 
-                onClick={handleInitiateRazorpayPayment} 
+              <Button
+                onClick={handleInitiateRazorpayPayment}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white text-xl py-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-bold disabled:transform-none disabled:cursor-not-allowed"
                 disabled={isPaymentStart}
               >
@@ -334,7 +334,7 @@ function ShoppingCheckout() {
                   </div>
                 )}
               </Button>
-              
+
               {/* Payment Methods */}
               <div className="mt-6 text-center">
                 <p className="text-slate-500 text-lg mb-4">Secure payment powered by Razorpay</p>

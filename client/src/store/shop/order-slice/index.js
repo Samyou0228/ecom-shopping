@@ -14,7 +14,7 @@ export const createNewOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/order/create",
+        "/api/shop/order/create",
         orderData,
         {
           withCredentials: true,
@@ -38,7 +38,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
     const response = await axios.get(
-      `http://localhost:5000/api/shop/order/list/${userId}?sort=orderDate:-1`,
+      `/api/shop/order/list/${userId}?sort=orderDate:-1`,
       {
         withCredentials: true,
       }
@@ -52,7 +52,7 @@ export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
     const response = await axios.get(
-      `http://localhost:5000/api/shop/order/details/${id}`,
+      `/api/shop/order/details/${id}`,
       {
         withCredentials: true,
       }

@@ -192,8 +192,8 @@ function ShoppingHome() {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
-                    ? "bg-white scale-125 shadow-lg"
-                    : "bg-white/50 hover:bg-white/80"
+                  ? "bg-white scale-125 shadow-lg"
+                  : "bg-white/50 hover:bg-white/80"
                   }`}
               />
             ))
@@ -346,7 +346,7 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
-                <div key={productItem._id} className="transform hover:scale-105 transition-transform duration-300 h-full">
+                <div key={productItem._id} className="h-full">
                   <ShoppingProductTile
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}

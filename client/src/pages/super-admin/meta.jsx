@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBrand, fetchCategoriesAndBrands } from "@/store/super-admin-slice";
+import { fetchCategoriesAndBrands, createBrand, updateBrand, deleteBrand } from "@/store/super-admin-slice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Building2, Plus, Tag } from "lucide-react";
+import { Building2, Plus, Tag, Edit, Trash2, X } from "lucide-react";
 
 function SuperAdminMeta() {
   const dispatch = useDispatch();
   const { brands } = useSelector((state) => state.superAdmin);
   const [brandName, setBrandName] = useState("");
+  const [currentEditedId, setCurrentEditedId] = useState(null);
 
   useEffect(() => {
     dispatch(fetchCategoriesAndBrands());
@@ -17,7 +18,36 @@ function SuperAdminMeta() {
   function handleAddBrand(event) {
     event.preventDefault();
     if (!brandName.trim()) return;
-    dispatch(createBrand({ name: brandName.trim() }));
+
+    if (currentEditedId) {
+      dispatch(
+        updateBrand({
+          id: currentEditedId,
+          payload: {
+            name: brandName.trim(),
+          },
+        })
+      );
+      setCurrentEditedId(null);
+    } else {
+      dispatch(createBrand({ name: brandName.trim() }));
+    }
+    setBrandName("");
+  }
+
+  function handleEditBrand(brand) {
+    setCurrentEditedId(brand._id);
+    setBrandName(brand.name);
+  }
+
+  function handleDeleteBrand(id) {
+    if (window.confirm("Are you sure you want to delete this brand?")) {
+      dispatch(deleteBrand(id));
+    }
+  }
+
+  function handleCancelEdit() {
+    setCurrentEditedId(null);
     setBrandName("");
   }
 
@@ -38,11 +68,21 @@ function SuperAdminMeta() {
       <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
         <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-purple-50 to-pink-50">
           <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Plus className="w-5 h-5" />
-            Add New Brand
+            {currentEditedId ? "Edit Brand" : "Add New Brand"}
           </h2>
+          {currentEditedId && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCancelEdit}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Cancel Edit
+            </Button>
+          )}
         </div>
-        
+
         <div className="p-5">
           <div className="flex gap-4 max-w-xl">
             <Input
@@ -51,14 +91,25 @@ function SuperAdminMeta() {
               onChange={(e) => setBrandName(e.target.value)}
               className="h-11 border-slate-200 focus:border-purple-500"
             />
-            <Button 
-              onClick={handleAddBrand}
-              disabled={!brandName.trim()}
-              className="h-11 px-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Brand
-            </Button>
+            {currentEditedId ? (
+              <Button
+                onClick={handleAddBrand}
+                disabled={!brandName.trim()}
+                className="h-11 px-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                <Edit className="w-5 h-5 mr-2" />
+                Update Brand
+              </Button>
+            ) : (
+              <Button
+                onClick={handleAddBrand}
+                disabled={!brandName.trim()}
+                className="h-11 px-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add Brand
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -76,7 +127,7 @@ function SuperAdminMeta() {
             </span>
           </div>
         </div>
-        
+
         <div className="p-5">
           {brands.length === 0 ? (
             <div className="text-center py-12">
@@ -89,19 +140,18 @@ function SuperAdminMeta() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {brands.map((brand, index) => (
-                <div 
+                <div
                   key={brand._id}
                   className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 hover:shadow-lg transition-all hover:-translate-y-1"
                 >
                   {/* Colorful top bar */}
-                  <div className={`h-2 bg-gradient-to-r ${
-                    index % 5 === 0 ? 'from-purple-400 to-pink-600' :
-                    index % 5 === 1 ? 'from-blue-400 to-cyan-600' :
-                    index % 5 === 2 ? 'from-emerald-400 to-teal-600' :
-                    index % 5 === 3 ? 'from-orange-400 to-red-600' :
-                    'from-indigo-400 to-blue-600'
-                  }`}></div>
-                  
+                  <div className={`h-2 bg-gradient-to-r ${index % 5 === 0 ? 'from-purple-400 to-pink-600' :
+                      index % 5 === 1 ? 'from-blue-400 to-cyan-600' :
+                        index % 5 === 2 ? 'from-emerald-400 to-teal-600' :
+                          index % 5 === 3 ? 'from-orange-400 to-red-600' :
+                            'from-indigo-400 to-blue-600'
+                    }`}></div>
+
                   <div className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center flex-shrink-0">
@@ -110,6 +160,22 @@ function SuperAdminMeta() {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-slate-800 truncate">{brand.name}</h3>
                         <p className="text-xs text-slate-500 mt-1">Brand</p>
+                      </div>
+
+                      {/* Edit/Delete Icons */}
+                      <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button
+                          onClick={() => handleEditBrand(brand)}
+                          className="p-1.5 bg-purple-500 text-white rounded-lg shadow-lg hover:bg-purple-600"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteBrand(brand._id)}
+                          className="p-1.5 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </div>

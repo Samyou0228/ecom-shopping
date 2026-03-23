@@ -38,85 +38,87 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
-
   return (
     <div className="flex flex-col overflow-hidden bg-white">
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <CheckAuth
-              isAuthenticated={isAuthenticated}
-              user={user}
-            ></CheckAuth>
-          }
-        />
-        <Route
-          path="/auth"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AuthLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="login" element={<AuthLogin />} />
-          <Route path="register" element={<AuthRegister />} />
-        </Route>
-        <Route
-          path="/admin"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AdminLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="features" element={<AdminFeatures />} />
-        </Route>
-        <Route
-          path="/super"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <SuperAdminLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="dashboard" element={<SuperAdminDashboard />} />
-          <Route path="categories" element={<SuperAdminCategories />} />
-          <Route path="meta" element={<SuperAdminMeta />} />
-          <Route path="admin-approval" element={<UnauthPage />} />
-        </Route>
-        <Route
-          path="/unauth-page"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <SuperAdminLayout />
-            </CheckAuth>
-          }
-        >
-          <Route index element={<UnauthPage />} />
-        </Route>
-        <Route
-          path="/shop"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <ShoppingLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="home" element={<ShoppingHome />} />
-          <Route path="listing" element={<ShoppingListing />} />
-          <Route path="cart" element={<ShoppingCart />} />
-          <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="account" element={<ShoppingAccount />} />
-          <Route path="payment-success" element={<PaymentSuccessPage />} />
-          <Route path="search" element={<SearchProducts />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      {isLoading ? (
+        <Skeleton className="w-full bg-black h-[600px]" />
+      ) : (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <CheckAuth
+                isAuthenticated={isAuthenticated}
+                user={user}
+              ></CheckAuth>
+            }
+          />
+          <Route
+            path="/auth"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <AuthLayout />
+              </CheckAuth>
+            }
+          >
+            <Route path="login" element={<AuthLogin />} />
+            <Route path="register" element={<AuthRegister />} />
+          </Route>
+          <Route
+            path="/admin"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <AdminLayout />
+              </CheckAuth>
+            }
+          >
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="features" element={<AdminFeatures />} />
+          </Route>
+          <Route
+            path="/super"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <SuperAdminLayout />
+              </CheckAuth>
+            }
+          >
+            <Route path="dashboard" element={<SuperAdminDashboard />} />
+            <Route path="categories" element={<SuperAdminCategories />} />
+            <Route path="meta" element={<SuperAdminMeta />} />
+            <Route path="admin-approval" element={<UnauthPage />} />
+          </Route>
+          <Route
+            path="/unauth-page"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <SuperAdminLayout />
+              </CheckAuth>
+            }
+          >
+            <Route index element={<UnauthPage />} />
+          </Route>
+          <Route
+            path="/shop"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingLayout />
+              </CheckAuth>
+            }
+          >
+            <Route path="home" element={<ShoppingHome />} />
+            <Route path="listing" element={<ShoppingListing />} />
+            <Route path="cart" element={<ShoppingCart />} />
+            <Route path="checkout" element={<ShoppingCheckout />} />
+            <Route path="account" element={<ShoppingAccount />} />
+            <Route path="payment-success" element={<PaymentSuccessPage />} />
+            <Route path="search" element={<SearchProducts />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      )}
     </div>
   );
 }
