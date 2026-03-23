@@ -260,7 +260,7 @@ function ShoppingCheckout() {
           </div>
 
           {/* Order Summary */}
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 p-8">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 p-4 sm:p-6 lg:p-8">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg">
                 <Truck className="w-6 h-6 text-white" />

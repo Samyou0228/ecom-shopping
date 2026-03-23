@@ -2,12 +2,26 @@ const Order = require("../../models/Order");
 
 const getAllOrdersOfAllUsers = async (req, res) => {
   try {
-    const orders = await Order.find({}).sort({ orderDate: -1 });
+    console.log("getAllOrdersOfAllUsers - req.user:", req.user);
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+    const { id, role } = req.user;
+    let query = {};
+
+    if (role === "admin") {
+      query.sellerId = id;
+    }
+
+    const orders = await Order.find(query).sort({ orderDate: -1 });
 
     if (!orders.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No orders found!",
+      return res.status(200).json({
+        success: true,
+        data: [],
       });
     }
 
@@ -27,6 +41,14 @@ const getAllOrdersOfAllUsers = async (req, res) => {
 const getOrderDetailsForAdmin = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("getOrderDetailsForAdmin - req.user:", req.user);
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+    const { id: adminId, role } = req.user;
 
     const order = await Order.findById(id);
 
@@ -34,6 +56,13 @@ const getOrderDetailsForAdmin = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Order not found!",
+      });
+    }
+
+    if (role === "admin" && order.sellerId !== adminId) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to view this order!",
       });
     }
 
@@ -54,6 +83,14 @@ const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { orderStatus } = req.body;
+    console.log("updateOrderStatus - req.user:", req.user);
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+    const { id: adminId, role } = req.user;
 
     const order = await Order.findById(id);
 
@@ -61,6 +98,13 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Order not found!",
+      });
+    }
+
+    if (role === "admin" && order.sellerId !== adminId) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this order!",
       });
     }
 

@@ -27,20 +27,24 @@ const createOrder = async (req, res) => {
       });
     }
 
-    const order = new Order({
-      userId,
-      cartId,
-      cartItems,
-      addressInfo,
-      orderStatus: "pending",
-      paymentMethod: "razorpay",
-      paymentStatus: "created",
-      totalAmount,
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
-      paymentId: "",
-      payerId: "",
-    });
+    // Group items by sellerId
+    const itemsWithSellers = await Promise.all(
+      cartItems.map(async (item) => {
+        const product = await Product.findById(item.productId);
+        return {
+          ...item,
+          sellerId: product.seller.toString(),
+        };
+      })
+    );
+
+    const groupedBySeller = itemsWithSellers.reduce((acc, item) => {
+      if (!acc[item.sellerId]) {
+        acc[item.sellerId] = [];
+      }
+      acc[item.sellerId].push(item);
+      return acc;
+    }, {});
 
     try {
       const razorpayOrder = await razorpayInstance.orders.create({
@@ -49,13 +53,44 @@ const createOrder = async (req, res) => {
         receipt: `order_rcptid_${Date.now()}`,
       });
 
-      order.paymentId = razorpayOrder.id;
+      const orders = [];
+      for (const sellerId in groupedBySeller) {
+        const sellerItems = groupedBySeller[sellerId];
+        const sellerTotalAmount = sellerItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
 
-      await order.save();
+        console.log(`Creating order for seller ${sellerId} with amount ${sellerTotalAmount}`);
+
+        const newOrder = new Order({
+          userId,
+          sellerId,
+          cartId,
+          cartItems: sellerItems,
+          addressInfo: {
+            ...addressInfo,
+            userName: req.user.userName,
+            email: req.user.email,
+          },
+          orderStatus: "pending",
+          paymentMethod: "razorpay",
+          paymentStatus: "created",
+          totalAmount: sellerTotalAmount,
+          orderDate: new Date(),
+          orderUpdateDate: new Date(),
+          paymentId: razorpayOrder.id, // Storing Razorpay Order ID
+          payerId: "",
+        });
+
+        await newOrder.save();
+        orders.push(newOrder);
+      }
 
       return res.status(201).json({
         success: true,
-        orderId: order._id,
+        orderId: orders[0]._id, // Sending first sub-order ID for tracking
+        subOrderIds: orders.map(o => o._id),
         razorpayOrderId: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
@@ -118,44 +153,40 @@ const capturePayment = async (req, res) => {
       });
     }
 
-    let order = await Order.findById(orderId);
+    // Find all orders linked to this Razorpay Order ID
+    const orders = await Order.find({ paymentId: razorpayOrderId });
 
-    if (!order) {
+    if (!orders.length) {
       return res.status(404).json({
         success: false,
-        message: "Order can not be found",
+        message: "Orders not found",
       });
     }
 
-    order.paymentStatus = "paid";
-    order.orderStatus = "confirmed";
-    order.paymentId = razorpayPaymentId;
-    order.payerId = "";
+    for (const order of orders) {
+      order.paymentStatus = "paid";
+      order.orderStatus = "confirmed";
+      order.paymentId = razorpayPaymentId; // Update with actual payment ID
+      order.payerId = "";
 
-    for (let item of order.cartItems) {
-      let product = await Product.findById(item.productId);
-
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Not enough stock for this product ${product.title}`,
-        });
+      for (let item of order.cartItems) {
+        let product = await Product.findById(item.productId);
+        if (product) {
+          product.totalStock -= item.quantity;
+          await product.save();
+        }
       }
-
-      product.totalStock -= item.quantity;
-
-      await product.save();
+      await order.save();
     }
 
-    const getCartId = order.cartId;
+    // Delete cart using cartId from the first order
+    const getCartId = orders[0].cartId;
     await Cart.findByIdAndDelete(getCartId);
-
-    await order.save();
 
     res.status(200).json({
       success: true,
       message: "Order confirmed",
-      data: order,
+      data: orders[0], // Return one of the orders for UI consistency
     });
   } catch (e) {
     console.log(e);
