@@ -171,8 +171,8 @@ const getAllOrdersByUser = async (req, res) => {
     const { userId } = req.params;
     const { sort } = req.query;
 
-    let sortObj = {};
-    if (sort === 'orderDate:-1') {
+    let sortObj = { orderDate: -1 };
+    if (sort === "orderDate:-1") {
       sortObj.orderDate = -1;
     }
 
