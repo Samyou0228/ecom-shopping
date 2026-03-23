@@ -17,6 +17,7 @@ function CommonForm({
   onSubmit,
   buttonText,
   isBtnDisabled,
+  validationErrors = {},
 }) {
   function renderInputsByComponentType(getControlItem) {
     let element = null;
@@ -31,14 +32,23 @@ function CommonForm({
             id={getControlItem.name}
             type={getControlItem.type}
             value={value}
-            onChange={(event) =>
+            onChange={(event) => {
+              let val = event.target.value;
+              if (getControlItem.isNumberOnly && val !== "" && !/^\d+$/.test(val)) {
+                return;
+              }
+              if (getControlItem.maxLength && val.length > getControlItem.maxLength) {
+                return;
+              }
               setFormData({
                 ...formData,
-                [getControlItem.name]: event.target.value,
+                [getControlItem.name]: val,
               })
-            }
+            }}
             disabled={getControlItem.disabled}
-            className="border-black/20 text-black placeholder:text-black/40"
+            maxLength={getControlItem.maxLength}
+            className={`border-black/20 text-black placeholder:text-black/40 ${validationErrors[getControlItem.name] ? "border-red-500" : ""
+              }`}
           />
         );
 
@@ -55,7 +65,10 @@ function CommonForm({
             value={value}
             disabled={getControlItem.disabled}
           >
-            <SelectTrigger className="w-full border-black/20">
+            <SelectTrigger
+              className={`w-full border-black/20 ${validationErrors[getControlItem.name] ? "border-red-500" : ""
+                }`}
+            >
               <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
@@ -85,7 +98,8 @@ function CommonForm({
               })
             }
             disabled={getControlItem.disabled}
-            className="border-black/20 text-black placeholder:text-black/40"
+            className={`border-black/20 text-black placeholder:text-black/40 ${validationErrors[getControlItem.name] ? "border-red-500" : ""
+              }`}
           />
         );
 
@@ -105,7 +119,8 @@ function CommonForm({
                 [getControlItem.name]: event.target.value,
               })
             }
-            className="border-black/20 text-black placeholder:text-black/40"
+            className={`border-black/20 text-black placeholder:text-black/40 ${validationErrors[getControlItem.name] ? "border-red-500" : ""
+              }`}
           />
         );
         break;
@@ -121,6 +136,9 @@ function CommonForm({
           <div className="grid w-full gap-1.5" key={controlItem.name}>
             <Label className="mb-1 text-black">{controlItem.label}</Label>
             {renderInputsByComponentType(controlItem)}
+            {validationErrors[controlItem.name] && (
+              <p className="text-red-500 text-xs mt-1">{validationErrors[controlItem.name]}</p>
+            )}
           </div>
         ))}
       </div>

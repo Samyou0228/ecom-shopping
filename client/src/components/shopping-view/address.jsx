@@ -23,13 +23,41 @@ const initialAddressFormData = {
 function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
   const { toast } = useToast();
 
+  function validate() {
+    let errors = {};
+    if (formData.address.trim().length < 10) {
+      errors.address = "Address must be at least 10 characters long.";
+    }
+    if (formData.city.trim() === "") {
+      errors.city = "City is required.";
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.city)) {
+      errors.city = "City should only contain letters.";
+    }
+    if (formData.pincode.trim() === "") {
+      errors.pincode = "Pincode is required.";
+    } else if (!/^\d{6}$/.test(formData.pincode)) {
+      errors.pincode = "Pincode must be exactly 6 digits.";
+    }
+    if (formData.phone.trim() === "") {
+      errors.phone = "Phone number is required.";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      errors.phone = "Phone number must be 10 digits and start with 6, 7, 8, or 9.";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   function handleManageAddress(event) {
     event.preventDefault();
+
+    if (!validate()) return;
 
     if (addressList.length >= 3 && currentEditedId === null) {
       setFormData(initialAddressFormData);
@@ -43,35 +71,37 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
     currentEditedId !== null
       ? dispatch(
-          editaAddress({
-            userId: user?.id,
-            addressId: currentEditedId,
-            formData,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            setCurrentEditedId(null);
-            setFormData(initialAddressFormData);
-            toast({
-              title: "Address updated successfully",
-            });
-          }
+        editaAddress({
+          userId: user?.id,
+          addressId: currentEditedId,
+          formData,
         })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllAddresses(user?.id));
+          setCurrentEditedId(null);
+          setFormData(initialAddressFormData);
+          setValidationErrors({});
+          toast({
+            title: "Address updated successfully",
+          });
+        }
+      })
       : dispatch(
-          addNewAddress({
-            ...formData,
-            userId: user?.id,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            setFormData(initialAddressFormData);
-            toast({
-              title: "Address added successfully",
-            });
-          }
-        });
+        addNewAddress({
+          ...formData,
+          userId: user?.id,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllAddresses(user?.id));
+          setFormData(initialAddressFormData);
+          setValidationErrors({});
+          toast({
+            title: "Address added successfully",
+          });
+        }
+      });
   }
 
   function handleDeleteAddress(getCurrentAddress) {
@@ -97,11 +127,12 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       pincode: getCuurentAddress?.pincode,
       notes: getCuurentAddress?.notes,
     });
+    setValidationErrors({});
   }
 
   function isFormValid() {
     return Object.keys(formData)
-      .map((key) => formData[key].trim() !== "")
+      .map((key) => key !== 'notes' ? formData[key].trim() !== "" : true)
       .every((item) => item);
   }
 
@@ -116,15 +147,15 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
-              <AddressCard
-                key={singleAddressItem?._id}
-                selectedId={selectedId}
-                handleDeleteAddress={handleDeleteAddress}
-                addressInfo={singleAddressItem}
-                handleEditAddress={handleEditAddress}
-                setCurrentSelectedAddress={setCurrentSelectedAddress}
-              />
-            ))
+            <AddressCard
+              key={singleAddressItem?._id}
+              selectedId={selectedId}
+              handleDeleteAddress={handleDeleteAddress}
+              addressInfo={singleAddressItem}
+              handleEditAddress={handleEditAddress}
+              setCurrentSelectedAddress={setCurrentSelectedAddress}
+            />
+          ))
           : null}
       </div>
       <CardHeader>
@@ -136,10 +167,16 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
         <CommonForm
           formControls={addressFormControls}
           formData={formData}
-          setFormData={setFormData}
+          setFormData={(newData) => {
+            setFormData(newData);
+            if (Object.keys(validationErrors).length > 0) {
+              setValidationErrors({});
+            }
+          }}
           buttonText={currentEditedId !== null ? "Edit" : "Add"}
           onSubmit={handleManageAddress}
           isBtnDisabled={!isFormValid()}
+          validationErrors={validationErrors}
         />
       </CardContent>
     </Card>

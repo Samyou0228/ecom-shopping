@@ -208,6 +208,8 @@ export const addressFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter your pincode",
+    maxLength: 6,
+    isNumberOnly: true,
   },
   {
     label: "Phone",
@@ -215,6 +217,8 @@ export const addressFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter your phone number",
+    maxLength: 10,
+    isNumberOnly: true,
   },
   {
     label: "Notes",
