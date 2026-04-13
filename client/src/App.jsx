@@ -27,6 +27,7 @@ import SuperAdminDashboard from "./pages/super-admin/dashboard";
 import SuperAdminAdmins from "./pages/super-admin/admins";
 import SuperAdminMeta from "./pages/super-admin/meta";
 import SuperAdminCategories from "./pages/super-admin/categories";
+import SuperAdminUsersOwners from "./pages/super-admin/users-owners";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -88,7 +89,8 @@ function App() {
             <Route path="dashboard" element={<SuperAdminDashboard />} />
             <Route path="categories" element={<SuperAdminCategories />} />
             <Route path="meta" element={<SuperAdminMeta />} />
-            <Route path="admin-approval" element={<UnauthPage />} />
+            <Route path="admin-approval" element={<SuperAdminAdmins />} />
+            <Route path="user-management" element={<SuperAdminUsersOwners />} />
           </Route>
           <Route
             path="/unauth-page"

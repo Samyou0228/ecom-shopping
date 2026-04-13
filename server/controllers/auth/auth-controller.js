@@ -4,7 +4,7 @@ const User = require("../../models/User");
 
 //register normal user
 const registerUser = async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, phoneNumber } = req.body;
 
   try {
     const checkUser = await User.findOne({ email });
@@ -21,6 +21,7 @@ const registerUser = async (req, res) => {
       password: hashPassword,
       role: "user",
       isApproved: true,
+      phoneNumber,
     });
 
     await newUser.save();
@@ -39,7 +40,7 @@ const registerUser = async (req, res) => {
 
 //register admin (needs superadmin approval)
 const registerAdmin = async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, phoneNumber } = req.body;
 
   try {
     const checkUser = await User.findOne({ email });
@@ -56,6 +57,7 @@ const registerAdmin = async (req, res) => {
       password: hashPassword,
       role: "admin",
       isApproved: false,
+      phoneNumber,
     });
 
     await newUser.save();

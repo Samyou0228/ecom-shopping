@@ -25,6 +25,7 @@ function SuperAdminLayout() {
     { path: "/super/categories", label: "Categories", icon: Tags },
     { path: "/super/meta", label: "Brands", icon: Building2 },
     { path: "/super/admin-approval", label: "Admin Approval", icon: Shield },
+    { path: "/super/user-management", label: "User Management", icon: Users },
   ];
 
   return (

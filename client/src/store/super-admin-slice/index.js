@@ -4,6 +4,8 @@ import axios from "axios";
 const initialState = {
   pendingAdmins: [],
   allAdmins: [],
+  allUsers: [],
+  allOwners: [],
   categories: [],
   brands: [],
   adminSummary: null,
@@ -99,6 +101,28 @@ export const deleteAdmin = createAsyncThunk(
       { withCredentials: true }
     );
     return { ...response.data, userId };
+  }
+);
+
+export const fetchAllUsers = createAsyncThunk(
+  "/super/fetchAllUsers",
+  async () => {
+    const response = await axios.get(
+      "/api/super/users-owners/users",
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+);
+
+export const fetchAllOwners = createAsyncThunk(
+  "/super/fetchAllOwners",
+  async () => {
+    const response = await axios.get(
+      "/api/super/users-owners/owners",
+      { withCredentials: true }
+    );
+    return response.data;
   }
 );
 
@@ -249,6 +273,26 @@ const superAdminSlice = createSlice({
             (admin) => admin._id !== action.payload.userId
           );
         }
+      })
+      .addCase(fetchAllUsers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allUsers = action.payload.success ? action.payload.data : [];
+      })
+      .addCase(fetchAllUsers.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(fetchAllOwners.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllOwners.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allOwners = action.payload.success ? action.payload.data : [];
+      })
+      .addCase(fetchAllOwners.rejected, (state) => {
+        state.isLoading = false;
       })
       .addCase(fetchCategoriesAndBrands.fulfilled, (state, action) => {
         state.categories = action.payload.categories;

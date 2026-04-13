@@ -18,6 +18,7 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 const commonCategoryRouter = require("./routes/common/category-routes");
 const superCategoryRouter = require("./routes/super/category-routes");
 const superAdminRouter = require("./routes/super/admin-routes");
+const userManagementRouter = require("./routes/super/user-management-routes");
 
 dotenv.config();
 
@@ -61,5 +62,6 @@ app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/common/category", commonCategoryRouter);
 app.use("/api/super/category", superCategoryRouter);
 app.use("/api/super/admins", superAdminRouter);
+app.use("/api/super/users-owners", userManagementRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
